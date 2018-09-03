@@ -17,6 +17,7 @@
       return {
         string_messages: null,
         array_messages: [
+          "Auto",
           "Good job!",
           "Rất hay giúp đỡ mọi người trong team",
           "Thanh niên chăm chỉ nhất team, good job",

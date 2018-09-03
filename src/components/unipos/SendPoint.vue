@@ -3,19 +3,19 @@
     <Item v-for="(user, index) in users"
       :user="user" :hash_tags="hash_tags"
       :messages="messages" :index="index"
-      ref="items"
+      ref="items" @show-changed="update_data"
     ></Item>
     <div class="row">
       <div class="col-9">
         <b-button size="sm" variant="success" v-b-tooltip.hover title="Add new user!" @click="add_user">
-          <fa-icon icon="save" />
+          Add new user
         </b-button>
       </div>
       <div class="col-3">
         <b-button size="sm" variant="success" v-b-tooltip.hover title="Save all user!" @click="save_all">
           <fa-icon icon="save" /> Save all
         </b-button>
-        <b-button size="sm" variant="primary" v-b-tooltip.hover title="Send point to all user!">
+        <b-button size="sm" variant="primary" v-b-tooltip.hover title="Send point to all user!" @click="send_all" id="send_all">
           <fa-icon icon="play" /> Send all
         </b-button>
       </div>
@@ -63,6 +63,18 @@
         this.$refs.items.forEach(function(item) {
           item.save();
         });
+      },
+      send_all() {
+        this.$refs.items.forEach(function(item, index) {
+          setTimeout(function(){ item.send_point(); }, 1000 * index);
+        });
+      },
+      update_data() {
+        if (!this.$localStorage.get('users')) {
+          this.$localStorage.set('users', JSON.stringify([]));
+        }
+
+        this.users = JSON.parse(this.$localStorage.get('users'));
       }
     }
   }

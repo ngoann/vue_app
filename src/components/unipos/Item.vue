@@ -28,24 +28,34 @@
       </b-form-input>
     </div>
     <div class="col-2">
-      <b-button size="sm" variant="outline-success" v-b-tooltip.hover title="Save!" @click="save">
-        <span v-if="saving">Saving...</span>
-        <fa-icon icon="save" v-else />
+      <b-button size="sm" variant="outline-success" v-b-tooltip.hover title="Save!" @click="save" id="btn-save">
+        <fa-icon icon="save" />
       </b-button>
-      <b-button size="sm" variant="outline-primary" v-b-tooltip.hover title="Send!" :disabled="!check_allow_save" @click="m_send">
-         <fa-icon icon="play" />
+      <b-button size="sm" variant="outline-primary"
+        v-b-tooltip.hover title="Send!"
+        :disabled="!check_allow_save"
+        @click="m_send" id="btn-send"
+      >
+        <fa-icon icon="play" />
       </b-button>
       <b-button size="sm" variant="outline-danger" v-b-tooltip.hover title="Remove!" @click="remove">
          <fa-icon icon="times" />
       </b-button>
+      <span v-if="show_alert"><b style="color: green">OK</b></span>
     </div>
   </div>
 </template>
 <script>
+import AlertTimeOut from '@/components/AlertTimeOut'
   export default {
     props: ['user', 'hash_tags', 'messages', 'index'],
+    components: {
+      AlertTimeOut
+    },
     data () {
       return {
+        dismissCountDown: 3,
+        show_alert: false,
         saving: false,
         check_user: this.user.username ? true : false,
         i_messages: this.messages,
@@ -53,8 +63,8 @@
         i_index: this.index,
         i_user: {
           username: this.user.username,
-          message: this.user.message || 1,
-          hash_tag: this.user.hash_tag || 1,
+          message: this.user.message || "Auto",
+          hash_tag: this.user.hash_tag,
           point: this.user.point,
           unipos_id: this.user.unipos_id,
         }
@@ -99,7 +109,12 @@
       }
     },
     methods: {
+      countDownChanged (dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
       save() {
+        let old_html = this.$el.querySelector('#btn-save').innerHTML;
+        this.$el.querySelector('#btn-save').innerHTML = '...';
         var users = JSON.parse(this.$localStorage.get('users'));
 
         if (users[this.i_index]) {
@@ -109,6 +124,8 @@
         }
 
         this.$localStorage.set('users', JSON.stringify(users));
+        this.$el.querySelector('#btn-save').innerHTML = old_html;
+        this.show_alert = true;
       },
       remove() {
         var users = JSON.parse(this.$localStorage.get('users'));
@@ -116,16 +133,30 @@
         if (users[this.i_index]) {
           users.splice(this.i_index, 1);
         }
-
         this.$localStorage.set('users', JSON.stringify(users));
+        this.$emit('show-changed');
       },
       m_send() {
         this.send_point();
       },
       send_point() {
+        if (!this.check_allow_save) {
+          return false;
+        }
+        var btn_send = this.$el.querySelector('#btn-send');
+        let old_html = btn_send.innerHTML;
+        btn_send.setAttribute('disabled', true);
+        btn_send.innerHTML = '...';
+
         var setting = JSON.parse(this.$localStorage.get('setting'));
         var url = "https://unipos.me/c/jsonrpc";
-        var message = `${this.i_user.hash_tag} ${this.i_user.message}`;
+        var user_message = "";
+        if (this.i_user.message == "Auto") {
+          user_message = this.messages[Math.floor(Math.random() * this.messages.length)];
+        } else {
+          user_message = this.i_user.message;
+        }
+        var message = `${this.i_user.hash_tag} ${user_message}`;
         var data = {
           "jsonrpc":"2.0",
           "method":"Unipos.SendCard",
@@ -145,6 +176,9 @@
         };
 
         return this.axios.post(url, data, options).then((response) => {
+          btn_send.innerHTML = old_html;
+          btn_send.removeAttribute('disabled');
+
           if(response.error) {
             return false;
           }
