@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-3">
       <b-input-group size="sm" class="mb-3">
-        <b-form-input placeholder="Ex: nguyen.ngoan"
+        <b-form-input placeholder="Ex: nguyen.ngoan" :state="f_check_user"
           v-b-tooltip.hover title="Enter the username"
           v-model="i_user.username" />
         <b-input-group-append>
@@ -41,7 +41,7 @@
       <b-button size="sm" variant="outline-danger" v-b-tooltip.hover title="Remove!" @click="remove">
          <fa-icon icon="times" />
       </b-button>
-      <span v-if="show_alert"><b style="color: green">OK</b></span>
+      <span style="display: none;" id="alert_message"><b style="color: green">OK</b></span>
     </div>
   </div>
 </template>
@@ -109,8 +109,11 @@ import AlertTimeOut from '@/components/AlertTimeOut'
       }
     },
     methods: {
-      countDownChanged (dismissCountDown) {
-        this.dismissCountDown = dismissCountDown
+      show_fade_el(el, timeout = 3) {
+        el.setAttribute('style', 'display: inline-block');
+        setTimeout(function(){
+          el.setAttribute('style', 'display: none');
+        }, timeout * 1000);
       },
       save() {
         let old_html = this.$el.querySelector('#btn-save').innerHTML;
@@ -125,7 +128,7 @@ import AlertTimeOut from '@/components/AlertTimeOut'
 
         this.$localStorage.set('users', JSON.stringify(users));
         this.$el.querySelector('#btn-save').innerHTML = old_html;
-        this.show_alert = true;
+        this.show_fade_el(this.$el.querySelector('#alert_message'), 5)
       },
       remove() {
         var users = JSON.parse(this.$localStorage.get('users'));
