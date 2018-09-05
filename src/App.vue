@@ -8,6 +8,9 @@
        <b-button size="sm" variant="success" href="#/unipos/message_management">
           <fa-icon icon="messages" /> Message management
        </b-button>
+       <b-button size="sm" variant="success" href="#/chatwork/report">
+          <fa-icon icon="messages" /> Daily report
+       </b-button>
        <b-button size="sm" variant="secondary" href="#/unipos/settings">
           Settings
        </b-button>
