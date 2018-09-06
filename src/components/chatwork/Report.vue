@@ -205,7 +205,7 @@ ${this.convert_to_an(this.report.daily_report)}
     },
     get_members() {
       if (this.report.room_id) {
-        var url = `http://localhost:5000/rooms/${this.report.room_id}/members`;
+        var url = `/rooms/${this.report.room_id}/members`;
         this.members = [];
         this.axios.get(url, {params: {token: this.setting.chatwork_token}}).then((res) => {
           if (res.data) {
@@ -220,7 +220,7 @@ ${this.convert_to_an(this.report.daily_report)}
       }
     },
     get_rooms() {
-      var url = "http://localhost:5000/rooms";
+      var url = "/rooms";
 
       return this.axios.get(url, {params: {token: this.setting.chatwork_token}}).then((res) => {
         if (res.data) {
@@ -273,7 +273,7 @@ ${this.convert_to_an(this.report.daily_report)}
       });
     },
     send_message() {
-      var url = `http://localhost:5000/rooms/${this.report.room_id}/messages`;
+      var url = `/rooms/${this.report.room_id}/messages`;
 
       return this.axios.post(url, {token: this.setting.chatwork_token, message: this.setup_message()}).then((res) => {
         if (res.data.errors) {
