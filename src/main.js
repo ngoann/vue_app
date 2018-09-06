@@ -14,7 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueLocalStorage from 'vue-localstorage'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueSweetalert2 from 'vue-sweetalert2';
 
+Vue.use(VueSweetalert2);
 Vue.use(VueAxios, axios)
 library.add(faSearch)
 library.add(faSave)

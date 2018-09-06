@@ -65,7 +65,7 @@
         </p>
         <p>{{ to_member_string() }}</p>
         <div class="main-content">
-          <div class="report-title">{{ report.title }}</div>
+          <div class="report-title" v-html="format_text(report.title)"></div>
           <div class="report-info">
             <h6>1. Today plan</h6>
             <p v-html="format_text(report.today_plan)"></p>
@@ -80,20 +80,19 @@
           </div>
         </div>
         <hr>
-        <div>
+        <div class="">
+          <b-button size="sm" variant="primary"  @click="send_message">
+            <fa-icon icon="messages" /> Send
+          </b-button>
+          <b-button size="sm" variant="default" @click="copy_message">
+            <fa-icon icon="messages" /> Copy
+          </b-button>
+        </div>
+        <div style="opacity: 0; height: 0px">
           <b-form-group>
             <b-form-textarea id="message_code" readonly :value="message_code" :rows="2" :max-rows="6">
             </b-form-textarea>
           </b-form-group>
-        </div>
-        <hr>
-        <div class="">
-          <b-button size="sm" variant="primary"  @click="send_message">
-             <fa-icon icon="messages" /> Send
-          </b-button>
-          <b-button size="sm" variant="default" @click="copy_message">
-             <fa-icon icon="messages" /> Copy
-          </b-button>
         </div>
       </div>
     </div>
@@ -140,7 +139,7 @@ export default {
       members: [],
       report: {
         room_id: null,
-        members: [],
+        members: {},
         title: null,
         today_plan: null,
         actual_archiverment: null,
@@ -151,6 +150,7 @@ export default {
     }
   },
   created() {
+    this.report.members = {}
     if (!this.$localStorage.get('setting')) {
       this.$localStorage.set('setting', JSON.stringify({}));
     }
@@ -162,12 +162,15 @@ export default {
     this.setting = JSON.parse(this.$localStorage.get('setting'));
     this.report = JSON.parse(this.$localStorage.get('report'));
     if (!this.report.members) {
-      this.report.members = []
+      this.report.members = {}
     }
     this.get_rooms();
   },
   computed: {
     show_members() {
+      if (!this.report.members[this.report.room_id]) {
+        this.report.members[this.report.room_id] = [];
+      }
       this.get_members();
     },
     save_report() {
@@ -181,7 +184,7 @@ export default {
     to_member_string() {
       var to_list = "";
 
-      this.report.members.forEach(function(member_id) {
+      this.report.members[this.report.room_id].forEach(function(member_id) {
         to_list += `[To:${member_id}]`
       });
 
@@ -203,13 +206,16 @@ ${this.convert_to_an(this.report.daily_report)}
     get_members() {
       if (this.report.room_id) {
         var url = `http://localhost:5000/rooms/${this.report.room_id}/members`;
-
-        return this.axios.get(url, {params: {token: this.setting.chatwork_token}}).then((res) => {
+        this.members = [];
+        this.axios.get(url, {params: {token: this.setting.chatwork_token}}).then((res) => {
           if (res.data) {
             this.members = res.data.map(function(member) {
               return {account_id: member.account_id, name: member.name, avatar_image_url: member.avatar_image_url}
             });
           }
+          this.$forceUpdate()
+        }).catch(e => {
+          this.errors.push(e)
         });
       }
     },
@@ -233,19 +239,20 @@ ${this.convert_to_an(this.report.daily_report)}
       }).join('\n');
     },
     change_to_member(status, member) {
-      var index = this.report.members.indexOf(member.account_id);
-      if (status == "accepted" || index == -1) {
-        this.report.members.push(member.account_id);
+      var index = this.report.members[this.report.room_id].indexOf(member.account_id);
+      if (status == "accepted" && index == -1) {
+        this.report.members[this.report.room_id].push(member.account_id);
       } else {
         if (index != -1) {
-          this.report.members.splice(index, 1);
+          this.report.members[this.report.room_id].splice(index, 1);
         }
       }
 
+      // this.report.members = {}
       this.$localStorage.set('report', JSON.stringify(this.report));
     },
     member_is_checked(member_id) {
-      return this.report.members.includes(member_id) ? "accepted" : "not_accepted"
+      return this.report.members[this.report.room_id].includes(member_id) ? "accepted" : "not_accepted"
     },
     convert_to_an(text) {
       if(!text || text == "")
@@ -258,10 +265,31 @@ ${this.convert_to_an(this.report.daily_report)}
       document.execCommand("copy");
     },
     copy_message() {
-      this.copy_to_clipboard("message_code")
+      this.copy_to_clipboard("message_code");
+      this.$swal({
+        type: 'success',
+        title: 'Your message code has been copied',
+        timer: 2000
+      });
     },
     send_message() {
+      var url = `http://localhost:5000/rooms/${this.report.room_id}/messages`;
 
+      return this.axios.post(url, {token: this.setting.chatwork_token, message: this.setup_message()}).then((res) => {
+        if (res.data.errors) {
+          this.$swal({
+            type: 'error',
+            title: 'Oops...',
+            text: res.data.errors
+          })
+        } else {
+          this.$swal({
+            type: 'success',
+            title: 'Sent message success!',
+            timer: 2000
+          });
+        }
+      });
     }
   }
 }

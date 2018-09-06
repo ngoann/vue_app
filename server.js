@@ -3,8 +3,12 @@ var request = require('request');
 var express = require('express');
 var path = require('path');
 var serveStatic = require('serve-static');
+var bodyParser = require('body-parser');
 app = express();
+
 app.use(serveStatic(__dirname + "/dist"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -30,6 +34,23 @@ app.get('/rooms/:id/members', function (req, res) {
     url: 'https://api.chatwork.com/v2/rooms/' + req.params.id + '/members',
     headers: {
       'X-ChatWorkToken': req.query.token
+    }
+  };
+  request(options, function (error, response, body) {
+    res.set({'Content-Type': 'application/json'});
+    res.send(body);
+  });
+});
+
+app.post('/rooms/:id/messages', function (req, res) {
+  var options = {
+    method: 'POST',
+    url: 'https://api.chatwork.com/v2/rooms/' + req.params.id + '/messages',
+    headers: {
+      'X-ChatWorkToken': req.body.token
+    },
+    form: {
+      body: req.body.message
     }
   };
   request(options, function (error, response, body) {
