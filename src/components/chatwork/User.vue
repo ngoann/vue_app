@@ -13,15 +13,12 @@
         i_member: this.member
       }
     },
-    computed: {
-
-    },
     methods: {
       change_checked() {
         if (this.member_value != "accepted") {
-          this.$emit('changeToMember', "accepted", this.i_member);
+          this.$store.commit('report/set_selected_memebers', this.i_member.account_id)
         } else {
-          this.$emit('changeToMember', "not_accepted", this.i_member);
+          this.$store.commit('report/remove_selected_memebers', this.i_member.account_id)
         }
       }
     }

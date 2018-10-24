@@ -15,9 +15,19 @@ import VueLocalStorage from 'vue-localstorage'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueSweetalert2 from 'vue-sweetalert2';
+import Vuex from 'vuex';
+import store from './store'
+import moment from 'moment';
+import VueMomentJS from 'vue-momentjs';
+import Datetime from 'vue-datetime'
+// You need a specific loader for CSS files
+import 'vue-datetime/dist/vue-datetime.css'
 
+Vue.use(Vuex);
 Vue.use(VueSweetalert2);
 Vue.use(VueAxios, axios)
+Vue.use(VueMomentJS, moment);
+Vue.use(Datetime);
 library.add(faSearch)
 library.add(faSave)
 library.add(faPlay)
@@ -33,6 +43,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

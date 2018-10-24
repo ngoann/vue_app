@@ -20,7 +20,7 @@ app.get('/rooms', function (req, res) {
   var options = {
     url: 'https://api.chatwork.com/v2/rooms',
     headers: {
-      'X-ChatWorkToken': req.query.token
+      'X-ChatWorkToken': 'd7d46e6dd7df5f10331b43fb50bcdd69'
     }
   };
   request(options, function (error, response, body) {
@@ -33,7 +33,7 @@ app.get('/rooms/:id/members', function (req, res) {
   var options = {
     url: 'https://api.chatwork.com/v2/rooms/' + req.params.id + '/members',
     headers: {
-      'X-ChatWorkToken': req.query.token
+      'X-ChatWorkToken': 'd7d46e6dd7df5f10331b43fb50bcdd69'
     }
   };
   request(options, function (error, response, body) {
@@ -47,7 +47,7 @@ app.post('/rooms/:id/messages', function (req, res) {
     method: 'POST',
     url: 'https://api.chatwork.com/v2/rooms/' + req.params.id + '/messages',
     headers: {
-      'X-ChatWorkToken': req.body.token
+      'X-ChatWorkToken': 'd7d46e6dd7df5f10331b43fb50bcdd69'
     },
     form: {
       body: req.body.message
