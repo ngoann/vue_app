@@ -2,7 +2,7 @@
   <b-col class="content" cols="12">
     <div class="row">
       <div class="col-6">
-        <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" :save="save_report" />
+        <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" :save="save_draft_report" />
         <hr>
         <p>Select users you wanna [TO] </p>
         <div class="">
@@ -38,7 +38,7 @@
         <h5>1. Today plan</h5>
         <div class="">
           <b-form-group>
-            <b-form-textarea v-model="report.today_plan" placeholder="https://dev.framgia.com/issues/18xxx | Abc..."
+            <b-form-textarea v-model="report.today_plan" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
               :rows="2" :max-rows="6" :disabled="!check_allow_edit">
             </b-form-textarea>
           </b-form-group>
@@ -47,7 +47,7 @@
         <h5>2. Actual archiverment</h5>
         <div>
           <b-form-group>
-            <b-form-textarea v-model="report.actual_archiverment" placeholder="https://dev.framgia.com/issues/18xxx | Abc..."
+            <b-form-textarea v-model="report.actual_archiverment" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
               :rows="2" :max-rows="6" :disabled="!check_allow_edit">
             </b-form-textarea>
           </b-form-group>
@@ -56,7 +56,7 @@
         <h5>3. Next plan</h5>
         <div>
           <b-form-group>
-            <b-form-textarea v-model="report.next_plan" placeholder="https://dev.framgia.com/issues/18xxx | Abc..."
+            <b-form-textarea v-model="report.next_plan" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
               :rows="2" :max-rows="6" :disabled="!check_allow_edit">
             </b-form-textarea>
           </b-form-group>
@@ -65,7 +65,7 @@
         <h5>4. Issues</h5>
         <div>
           <b-form-group>
-            <b-form-textarea v-model="report.issues" placeholder="https://dev.framgia.com/issues/18xxx | Abc..."
+            <b-form-textarea v-model="report.issues" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
               :rows="2" :max-rows="6" :disabled="!check_allow_edit">
             </b-form-textarea>
           </b-form-group>
@@ -211,9 +211,8 @@ export default {
     show_members() {
       return this.get_members();
     },
-    save_report() {
+    save_draft_report() {
       this.$store.commit('report/set_state', {name: 'report', value: this.report});
-      // this.$localStorage.set('reports', JSON.stringify(this.$store.state.report.reports));
     },
     message_code() {
       return this.setup_message();
@@ -264,10 +263,12 @@ ${this.convert_to_an(this.report.daily_report)}
                 return {account_id: member.account_id, name: member.name}
               });
             }
+            var room_id = this.configs.room_id
+            this.configs.room_id = null
+            this.configs.room_id = room_id
           }).catch(e => {
             this.errors.push(e)
           });
-          this.$forceUpdate();
         }
 
         this.$store.commit('report/set_state', {name: 'configs', value: this.configs});
@@ -293,21 +294,6 @@ ${this.convert_to_an(this.report.daily_report)}
         return el.replace(exp,"<a href='$1' target='_blank'>$1</a>");
       }).join('\n');
     },
-    change_to_member(status, member) {
-      var index = this.report.members[this.configs.room_id].indexOf(member.account_id);
-      if (status == "accepted" && index == -1) {
-        this.report.members[this.configs.room_id].push(member.account_id);
-      } else {
-        if (index != -1) {
-          this.report.members[this.configs.room_id].splice(index, 1);
-        }
-      }
-
-      // this.report.members = {}
-      // this.$localStorage.set('report', JSON.stringify(this.report));
-      this.$store.commit('report/set_state', {name: 'report', value: this.report});
-      // this.$localStorage.set('reports', JSON.stringify(this.$store.state.report.reports));
-    },
     member_is_checked(member) {
       var selected_members = this.$store.state.report.configs.selected_members[this.configs.room_id] || []
       return selected_members.includes(member) ? "accepted" : "not_accepted"
@@ -323,6 +309,8 @@ ${this.convert_to_an(this.report.daily_report)}
       document.execCommand("copy");
     },
     copy_message() {
+      this.save_report();
+
       this.copy_to_clipboard("message_code");
       this.$swal({
         type: 'success',
@@ -331,6 +319,8 @@ ${this.convert_to_an(this.report.daily_report)}
       });
     },
     send_message() {
+      this.save_report();
+
       var url = `${process.env.ROOT_API}/rooms/${this.configs.room_id}/messages`;
 
       return this.axios.post(url, {token: this.setting.chatwork_token, message: this.setup_message()}).then((res) => {
@@ -347,6 +337,15 @@ ${this.convert_to_an(this.report.daily_report)}
             timer: 2000
           });
         }
+      });
+    },
+    save_report() {
+      var url = `${process.env.ROOT_API}/save_report`;
+      this.report.date = this.selected_date_string;
+      this.axios.post(url, {token: null, report: this.report}).then((res) => {
+          //
+      }).catch(e => {
+        
       });
     }
   }

@@ -46,8 +46,6 @@ const state = {
   next_date_string: moment().add('days', 1).format(DATE_FORMAT),
   report: {},
   report_nil: {
-    room_id: null,
-    members: {},
     title: null,
     today_plan: null,
     actual_archiverment: null,
