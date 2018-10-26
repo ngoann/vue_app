@@ -22,8 +22,10 @@ import VueMomentJS from 'vue-momentjs';
 import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
+import Argon from "./plugins/argon-kit";
 
 Vue.use(Vuex);
+Vue.use(Argon);
 Vue.use(VueSweetalert2);
 Vue.use(VueAxios, axios)
 Vue.use(VueMomentJS, moment);

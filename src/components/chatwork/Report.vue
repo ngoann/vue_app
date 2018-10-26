@@ -1,122 +1,129 @@
 <template>
-  <b-col class="content" cols="12">
-    <div class="row">
-      <div class="col-6">
-        <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" :save="save_draft_report" />
-        <hr>
-        <p>Select users you wanna [TO] </p>
-        <div class="">
-          <User v-for="member in show_members" :member="member" :checked="member_is_checked(member.account_id)" :key="member.account_id + Date.now()" />
-        </div>
-        <hr>
-        <div class="text-center">
-          <datetime type="date" v-model="prev_date_string" :default-value="new Date()" input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
-
-          <!-- <b-button size="sm" variant="default" :variant="selected_date_string == prev_date_string ? 'primary' : 'default'"
-            @click="selected_plan(prev_date_string)">
-            Prev plan
-          </b-button> -->
-          <b-button size="sm" :variant="selected_date_string == today_date_string ? 'primary' : 'default'"
-            @click="selected_plan(today_date_string)">
-            Today plan
-          </b-button>
-          <b-button size="sm" variant="default" :variant="selected_date_string == next_date_string ? 'primary' : 'default'"
-            @click="selected_plan(next_date_string)">
-            Next plan
-          </b-button>
-        </div>
-        <hr>
-        <h4>Content</h4>
-        <div>
-          <b-form-group>
-            <b-form-input type="text" v-model="report.title" placeholder="Please enter the user: NgoanN"
-              v-b-tooltip.hover title="Please enter the User" :disabled="!check_allow_edit"></b-form-input>
-          </b-form-group>
-        </div>
-
-        <hr>
-        <h5>1. Today plan</h5>
-        <div class="">
-          <b-form-group>
-            <b-form-textarea v-model="report.today_plan" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
-              :rows="2" :max-rows="6" :disabled="!check_allow_edit">
-            </b-form-textarea>
-          </b-form-group>
-        </div>
-        <hr>
-        <h5>2. Actual archiverment</h5>
-        <div>
-          <b-form-group>
-            <b-form-textarea v-model="report.actual_archiverment" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
-              :rows="2" :max-rows="6" :disabled="!check_allow_edit">
-            </b-form-textarea>
-          </b-form-group>
-        </div>
-        <hr>
-        <h5>3. Next plan</h5>
-        <div>
-          <b-form-group>
-            <b-form-textarea v-model="report.next_plan" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
-              :rows="2" :max-rows="6" :disabled="!check_allow_edit">
-            </b-form-textarea>
-          </b-form-group>
-        </div>
-        <hr>
-        <h5>4. Issues</h5>
-        <div>
-          <b-form-group>
-            <b-form-textarea v-model="report.issues" placeholder="https://dev.framgia.com/issues/18xxx | Note..."
-              :rows="2" :max-rows="6" :disabled="!check_allow_edit">
-            </b-form-textarea>
-          </b-form-group>
-        </div>
-        <hr>
-        <h5>5. Dailly Report</h5>
-        <div class="">
-          <b-form-group>
-            <b-form-input type="text" v-model="report.daily_report" :disabled="!check_allow_edit"
-              placeholder="https://docs.google.com/spreadsheets/d/1xxxxedit#gid=123455"></b-form-input>
-          </b-form-group>
-        </div>
-      </div>
-      <div class="col-6">
-        <label for=""><b>Live demo:</b></label>
-        <p class="">
-        </p>
-        <p>{{ to_member_string() }}</p>
-        <div class="main-content">
-          <div class="report-title" v-html="`${format_text(report.title)} - Daily report ${selected_date_string}`"></div>
-          <div class="report-info">
-            <h6>1. Today plan</h6>
-            <p v-html="format_text(report.today_plan)"></p>
-            <h6>2. Actual archiverment</h6>
-            <p v-html="format_text(report.actual_archiverment)"></p>
-            <h6>3. Next plan</h6>
-            <p v-html="format_text(report.next_plan)"></p>
-            <h6>4. Issues</h6>
-            <p v-html="format_text(report.issues)"></p>
-            <h6>5. Dailly Report</h6>
-            <p v-html="format_text(report.daily_report)"></p>
+  <div class="row">
+    <div class="col-6">
+      <card shadow class="" no-body>
+        <div class="px-3 py-3">
+          <div class="">
+            <div class="text-uppercase font-weight-bold title badge badge-primary">Select room: </div>
+            <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" size="sm" :save="save_draft_report" />
+          </div>
+          <div class="members" style="margin-bottom: 15px">
+            <div class="text-uppercase font-weight-bold title badge badge-warning">Select users you want to [TO]: </div>
+            <div class="">
+              <User v-for="member in show_members" :member="member" :checked="member_is_checked(member.account_id)" :key="member.account_id + Date.now()" />
+            </div>
+          </div>
+          <div style="border-bottom: 1px solid rgb(72, 0, 139); margin-bottom: 15px;"></div>
+          <div class="content">
+            <div class="text-uppercase font-weight-bold title badge badge-success">Content:</div>
+            <div>
+              <b-form-group>
+                <b-form-input v-model="report.title" size="sm" placeholder="Please enter the user: NgoanN"
+                  :disabled="!check_allow_edit">
+                </b-form-input>
+              </b-form-group>
+            </div>
+            <div class="">
+              <div class="badge text-uppercase badge-info">1. Today plan</div>
+              <div class="">
+                <b-form-group>
+                  <b-form-textarea v-model="report.today_plan"
+                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
+                  </b-form-textarea>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="">
+              <div class="badge text-uppercase badge-info">2. Actual archiverment</div>
+              <div>
+                <b-form-group>
+                  <b-form-textarea v-model="report.actual_archiverment"
+                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
+                  </b-form-textarea>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="">
+              <div class="badge text-uppercase badge-info">3. Next plan</div>
+              <div>
+                <b-form-group>
+                  <b-form-textarea v-model="report.next_plan"
+                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
+                  </b-form-textarea>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="">
+              <div class="badge text-uppercase badge-info">4. Issues</div>
+              <div>
+                <b-form-group>
+                  <b-form-textarea v-model="report.issues"
+                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
+                  </b-form-textarea>
+                </b-form-group>
+              </div>
+            </div>
+            <div class="">
+              <div class="badge text-uppercase badge-info">5. Dailly Report</div>
+              <div class="">
+                <b-form-group>
+                  <b-form-input type="text" v-model="report.daily_report" :disabled="!check_allow_edit" size="sm"
+                    placeholder="https://docs.google.com/spreadsheets/d/1xxxxedit#gid=123455"></b-form-input>
+                </b-form-group>
+              </div>
+            </div>
           </div>
         </div>
-        <hr>
-        <div class="">
-          <b-button size="sm" variant="primary"  @click="send_message">
-            <fa-icon icon="messages" /> Save and Send
-          </b-button>
-          <b-button size="sm" variant="success" @click="copy_message">
-            <fa-icon icon="messages" /> Save and Copy
-          </b-button>
-        </div>
-        <div style="opacity: 0; height: 0px">
-          <b-form-group>
-            <b-form-textarea id="message_code" readonly :value="message_code" :rows="2" :max-rows="6">
-            </b-form-textarea>
-          </b-form-group>
-        </div>
-      </div>
+      </card>
     </div>
-  </b-col>
+    <div class="col-6">
+      <card shadow class="" no-body>
+        <div class="px-3 py-3">
+          <div class="text-center mt-3 mb-4">
+            <datetime type="date" v-model="prev_date_string" :default-value="new Date()" input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
+            <b-button size="sm" :variant="selected_date_string == today_date_string ? 'primary' : 'default'"
+              @click="selected_plan(today_date_string)">
+              Today plan
+            </b-button>
+            <b-button size="sm" variant="default" :variant="selected_date_string == next_date_string ? 'primary' : 'default'"
+              @click="selected_plan(next_date_string)">
+              Next plan
+            </b-button>
+          </div>
+          <!-- <p>{{ to_member_string() }}</p> -->
+          <div class="main-content" style="margin-bottom: 20px; font-size: 0.9rem;">
+            <div class="report-title" v-html="`${format_text(report.title)} - Daily report ${selected_date_string}`"></div>
+            <div class="report-info">
+              <h6>1. Today plan</h6>
+              <p v-html="format_text(report.today_plan)"></p>
+              <h6>2. Actual archiverment</h6>
+              <p v-html="format_text(report.actual_archiverment)"></p>
+              <h6>3. Next plan</h6>
+              <p v-html="format_text(report.next_plan)"></p>
+              <h6>4. Issues</h6>
+              <p v-html="format_text(report.issues)"></p>
+              <h6>5. Dailly Report</h6>
+              <p v-html="format_text(report.daily_report)"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <base-button class="btn-3 btn-block" type="primary" icon="ni ni-bag-17"  @click="send_message">Save and Send</base-button>
+            </div>
+            <div class="col-6">
+              <base-button class="btn-3 btn-block" type="success" icon="ni ni-bag-17"  @click="copy_message">Save and Copy</base-button>
+            </div>
+          </div>
+          <div style="opacity: 0; height: 0px">
+            <b-form-group>
+              <b-form-textarea id="message_code" readonly :value="message_code" :rows="2" :max-rows="6">
+              </b-form-textarea>
+            </b-form-group>
+          </div>
+        </div>
+      </card>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -345,7 +352,7 @@ ${this.convert_to_an(this.report.daily_report)}
       this.axios.post(url, {token: null, report: this.report}).then((res) => {
           //
       }).catch(e => {
-        
+
       });
     }
   }

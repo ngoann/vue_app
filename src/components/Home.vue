@@ -1,7 +1,15 @@
 <template>
+  <div>
+    <hero></hero>
+  </div>
 </template>
 <script>
-  export default {
+import Hero from "../views/components/Hero";
 
+export default {
+  name: "Home",
+  components: {
+    Hero
   }
+};
 </script>

@@ -39,7 +39,12 @@
     "vue-sessionstorage": "^1.0.0",
     "vue-sweetalert2": "^1.5.3",
     "vuex": "^3.0.1",
-    "weekstart": "^1.0.0"
+    "weekstart": "^1.0.0",
+    "flatpickr": "^4.5.1",
+    "nouislider": "^11.1.0",
+    "vue-flatpickr-component": "^7.0.4",
+    "vue-lazyload": "^1.2.6",
+    "vue2-transitions": "^0.2.3"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -95,11 +100,13 @@
     "vue-jest": "^1.0.2",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
-    "vue-template-compiler": "^2.5.2",
+    "vue-template-compiler": "^2.5.16",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.0.1"
   },
   "engines": {
     "node": ">= 10.7.0",
