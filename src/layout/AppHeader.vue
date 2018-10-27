@@ -2,12 +2,12 @@
     <header class="header-global">
         <base-nav class="navbar-main" transparent type="" effect="light" expand>
             <a slot="brand" class="navbar-brand mr-lg-5" href="#/">
-                <img src="img/brand/white.png">
+                <img :src="this.$baseUrl('/img/brand/white.png')">
             </a>
 
             <div class="row" slot="content-header" slot-scope="{closeMenu}">
                 <div class="col-6 collapse-brand">
-                    <a href="https://demos.creative-tim.com/vue-argon-design-system/documentation/">
+                    <a href="#">
                         <img src="img/brand/blue.png">
                     </a>
                 </div>
@@ -63,7 +63,13 @@
                     </a>
                 </li> -->
                 <li class="nav-item d-none d-lg-block ml-lg-4">
-                    <a href="#/login" class="btn btn-neutral btn-icon">
+                    <a href="#/logout" class="btn btn-neutral btn-icon" v-if="auth">
+                      <span class="btn-inner--icon">
+                        <i class="ni ni-curved-next mr-2"></i>
+                      </span>
+                      <span class="nav-link-inner--text">LOGOUT</span>
+                    </a>
+                    <a href="#/login" class="btn btn-neutral btn-icon" v-else>
                       <span class="btn-inner--icon">
                         <i class="ni ni-curved-next mr-2"></i>
                       </span>
@@ -78,12 +84,18 @@
 import BaseNav from "@/components/BaseNav";
 import BaseDropdown from "@/components/BaseDropdown";
 import CloseButton from "@/components/CloseButton";
+import { mapState } from 'vuex'
 
 export default {
   components: {
     BaseNav,
     CloseButton,
     BaseDropdown
+  },
+  computed: {
+    ...mapState('authentication', [
+      'auth'
+    ]),
   }
 };
 </script>

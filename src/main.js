@@ -40,7 +40,9 @@ Vue.use(VueLocalStorage)
 Vue.use(BootstrapVue);
 Vue.use(iView);
 Vue.config.productionTip = false
-
+Vue.prototype.$baseUrl = (url = '') => {
+  return process.env.ROOT_API + url
+}
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

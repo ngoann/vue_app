@@ -94,15 +94,15 @@
           <div class="main-content" style="margin-bottom: 20px; font-size: 0.9rem;">
             <div class="report-title" v-html="`${format_text(report.title)} - Daily report ${selected_date_string}`"></div>
             <div class="report-info">
-              <h6>1. Today plan</h6>
+              <h6 style="font-size: 0.91rem;">1. Today plan</h6>
               <p v-html="format_text(report.today_plan)"></p>
-              <h6>2. Actual archiverment</h6>
+              <h6 style="font-size: 0.91rem;">2. Actual archiverment</h6>
               <p v-html="format_text(report.actual_archiverment)"></p>
-              <h6>3. Next plan</h6>
+              <h6 style="font-size: 0.91rem;">3. Next plan</h6>
               <p v-html="format_text(report.next_plan)"></p>
-              <h6>4. Issues</h6>
+              <h6 style="font-size: 0.91rem;">4. Issues</h6>
               <p v-html="format_text(report.issues)"></p>
-              <h6>5. Dailly Report</h6>
+              <h6 style="font-size: 0.91rem;">5. Dailly Report</h6>
               <p v-html="format_text(report.daily_report)"></p>
             </div>
           </div>
@@ -125,39 +125,6 @@
     </div>
   </div>
 </template>
-
-<style scoped>
-  .vdatetime-input {
-    width: 88px !important;
-  }
-
-  .vdatetime {
-    display: inline-block;
-  }
-
-  .main-content {
-    border-radius: 3px;
-    border: 1px solid #cccccc;
-  }
-
-  .report-title {
-    background: #f2f2f2;
-    border-bottom: 1px solid #cccccc;
-    font-size: 15px;
-    padding: 2px 10px;
-  }
-
-  .report-info {
-    padding: 10px 10px;
-  }
-
-  .report-info p {
-    font-size: 14px;
-    padding: 0px 6px;
-    white-space: pre;
-  }
-</style>
-
 <script>
 import User from '@/components/chatwork/User'
 import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
@@ -181,6 +148,12 @@ export default {
       members: {},
       configs: this.$store.state.report.configs,
       report: this.$store.state.report.report_nil
+    }
+  },
+  beforeCreate() {
+    if(!this.$store.state.authentication.auth) {
+      this.$store.commit('authentication/setState', {name: 'back_url', value: this.$router.currentRoute.path})
+      this.$router.push('/login')
     }
   },
   watch: {
@@ -212,6 +185,9 @@ export default {
     this.get_rooms();
   },
   computed: {
+    ...mapState('authentication', [
+      'auth'
+    ]),
     check_allow_edit() {
       return this.$store.state.report.selected_date_string == this.$store.state.report.today_date_string
     },
@@ -358,3 +334,35 @@ ${this.convert_to_an(this.report.daily_report)}
   }
 }
 </script>
+
+<style scoped>
+  .vdatetime-input {
+    width: 88px !important;
+  }
+
+  .vdatetime {
+    display: inline-block;
+  }
+
+  .main-content {
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+  }
+
+  .report-title {
+    background: #f2f2f2;
+    border-bottom: 1px solid #cccccc;
+    font-size: 15px;
+    padding: 2px 10px;
+  }
+
+  .report-info {
+    padding: 10px 10px;
+  }
+
+  .report-info p {
+    font-size: 14px;
+    padding: 0px 6px;
+    white-space: pre;
+  }
+</style>

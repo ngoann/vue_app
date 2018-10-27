@@ -1,6 +1,3 @@
-// initial state
-// shape: [{ id, quantity }]
-
 var localStorage = require('localStorage')
 var moment = require('moment');
 const DATE_FORMAT = 'DD/MM/YYYY';

@@ -3,16 +3,16 @@ default: &default
   encoding: utf8
   pool: 5
   username: root
-  password: 123456
+  password:
   socket: /var/run/mysqld/mysqld.sock
 development:
   <<: *default
-  database: vue_app_development
+  database: food_and_drink_development
 test:
   <<: *default
-  database: vue_app_test
+  database: food_and_drink_test
 production:
   <<: *default
-  database: vue_app_production
+  database: food_and_drink_production
   username: root
   password: <%= ENV['DATABASE_PASSWORD'] %>

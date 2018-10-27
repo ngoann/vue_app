@@ -8,6 +8,8 @@ import UniposSendPoint from '@/components/unipos/SendPoint'
 import UniposSetting from '@/components/unipos/Setting'
 import UniposMessageManagement from '@/components/unipos/MessageManagement'
 import Login from '../views/Login'
+import Register from '../views/Register'
+import Logout from '../views/Logout'
 import Components from '../views/Components'
 
 Vue.use(Router)
@@ -28,6 +30,16 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      component: Logout
     },
     {
       path: '/unipos',

@@ -23,12 +23,12 @@
                             </div>
                             <div class="btn-wrapper text-center">
                                 <base-button type="neutral">
-                                    <img slot="icon" src="img/icons/common/github.svg">
+                                    <img slot="icon" :src="this.$baseUrl('/img/icons/common/github.svg')">
                                     Github
                                 </base-button>
 
                                 <base-button type="neutral">
-                                    <img slot="icon" src="img/icons/common/google.svg">
+                                    <img slot="icon" :src="this.$baseUrl('/img/icons/common/google.svg')">
                                     Google
                                 </base-button>
                             </div>
@@ -38,17 +38,17 @@
                                 <small>Or sign up with credentials</small>
                             </div>
                             <form role="form">
-                                <base-input alternative
+                                <base-input alternative v-model="name"
                                             class="mb-3"
-                                            placeholder="Name"
+                                            placeholder="Name (EX: NgoanN)"
                                             addon-left-icon="ni ni-hat-3">
                                 </base-input>
-                                <base-input alternative
+                                <base-input alternative v-model="username"
                                             class="mb-3"
-                                            placeholder="Email"
+                                            placeholder="Username"
                                             addon-left-icon="ni ni-email-83">
                                 </base-input>
-                                <base-input alternative
+                                <base-input alternative v-model="password"
                                             type="password"
                                             placeholder="Password"
                                             addon-left-icon="ni ni-lock-circle-open">
@@ -58,13 +58,8 @@
                                         <span class="text-success font-weight-700">strong</span>
                                     </small>
                                 </div>
-                                <base-checkbox>
-                                    <span>I agree with the
-                                        <a href="#">Privacy Policy</a>
-                                    </span>
-                                </base-checkbox>
                                 <div class="text-center">
-                                    <base-button type="primary" class="my-4">Create account</base-button>
+                                    <base-button type="primary" class="my-4" @click="sign_up_action">Create account</base-button>
                                 </div>
                             </form>
                         </template>
@@ -75,7 +70,68 @@
     </section>
 </template>
 <script>
-export default {};
+import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
+
+export default {
+  data() {
+    return {
+    }
+  },
+  created() {
+    this.$store.dispatch('authentication/authenticate_token');
+    this.authenticated();
+  },
+  methods: {
+    ...mapActions('authentication', [
+      'sign_up'
+    ]),
+    ...mapMutations('authentication', [
+      'setState'
+    ]),
+    ...mapGetters('authentication', [
+      'getUsername', 'getPassword', 'getName'
+    ]),
+    sign_up_action() {
+      this.sign_up();
+      this.authenticated();
+    },
+    authenticated() {
+      if (this.auth) {
+        this.$router.push('/')
+      }
+    }
+  },
+  computed: {
+    ...mapState('authentication', [
+      'auth', 'username', 'password', 'name'
+    ]),
+
+    name: {
+      get: function() {
+        return this.getName()
+      },
+      set: function (newValue) {
+        this.setState({name: 'name', value: newValue})
+      }
+    },
+    username: {
+      get: function() {
+        return this.getUsername()
+      },
+      set: function (newValue) {
+        this.setState({name: 'username', value: newValue})
+      }
+    },
+    password: {
+      get: function() {
+        return this.getPassword()
+      },
+      set: function (newValue) {
+        this.setState({name: 'password', value: newValue})
+      }
+    }
+  }
+};
 </script>
 <style>
 </style>
