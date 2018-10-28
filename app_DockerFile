@@ -1,0 +1,25 @@
+FROM ruby:2.5.3
+RUN apt-get update -qq
+RUN apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
+RUN apt-get install -y qt5-default libbison-dev libqt5webkit5-dev
+
+ENV RAILS_ROOT server
+RUN mkdir -p $RAILS_ROOT
+
+# Set working directory
+WORKDIR $RAILS_ROOT
+
+# Setting env up
+ENV RAILS_ENV='production'
+ENV RACK_ENV='production'
+
+# Adding gems
+COPY server/Gemfile Gemfile
+COPY server/Gemfile.lock Gemfile.lock
+RUN bundle install --jobs 20 --retry 5 --without development test
+
+# Adding project files
+COPY server .
+RUN bundle exec rake db:create db:migrate assets:precompile
+EXPOSE 3000
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

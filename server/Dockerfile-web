@@ -1,0 +1,12 @@
+FROM ruby:2.5.3
+RUN apt-get update -qq
+RUN apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
+RUN apt-get install -y qt5-default libbison-dev libqt5webkit5-dev
+
+RUN mkdir /vue_server
+WORKDIR /vue_server
+
+ADD Gemfile /vue_server/Gemfile
+ADD Gemfile.lock /vue_server/Gemfile.lock
+RUN bundle install
+ADD . /vue_server
