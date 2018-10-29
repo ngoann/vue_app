@@ -7,7 +7,11 @@ default: &default
   password: root
 development:
   <<: *default
-  database: vue_server_development
+  database: db_server_development
+production:
+  <<: *default
+  database: db_server_production
+  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
 test:
   <<: *default
-  database: vue_server_test
+  database: db_server_test

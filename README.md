@@ -27,4 +27,16 @@ npm run e2e
 npm test
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Build server
+
+``` bash
+sudo docker-compose run --rm web rails db:create
+sudo docker-compose run --rm web rails db:migrate
+sudo docker-compose run --rm web rake secret
+
+#development
+sudo docker-compose up
+
+#deploy prod
+sudo docker-compose -f docker-compose.prod.yml up
+```

@@ -7,12 +7,12 @@ default: &default
   socket: /var/run/mysqld/mysqld.sock
 development:
   <<: *default
-  database: food_and_drink_development
+  database: xxx_development
 test:
   <<: *default
-  database: food_and_drink_test
+  database: xxx_test
 production:
   <<: *default
-  database: food_and_drink_production
+  database: xxx_production
   username: root
   password: <%= ENV['DATABASE_PASSWORD'] %>
