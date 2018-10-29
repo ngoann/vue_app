@@ -11,8 +11,6 @@ services:
       context: .
       dockerfile: Dockerfile-web
     env_file: .env
-    environment:
-      RAILS_ENV: production
     volumes:
       - .:/server
     ports:

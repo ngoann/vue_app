@@ -1,5 +1,5 @@
 <template>
-    <section class="section section-shaped section-lg my-0">
+    <section class="section section-shaped section-lg my-0" :bind="authenticated">
         <div class="shape shape-style-1 bg-gradient-default">
             <span></span>
             <span></span>
@@ -79,7 +79,9 @@ export default {
   },
   created() {
     this.$store.dispatch('authentication/authenticate_token');
-    this.authenticated();
+    if (this.auth) {
+      this.$router.push(this.back_url)
+    }
   },
   methods: {
     ...mapActions('authentication', [
@@ -93,19 +95,17 @@ export default {
     ]),
     sign_up_action() {
       this.sign_up();
-      this.authenticated();
-    },
-    authenticated() {
-      if (this.auth) {
-        this.$router.push('/')
-      }
     }
   },
   computed: {
     ...mapState('authentication', [
-      'auth', 'username', 'password', 'name'
+      'auth', 'username', 'password', 'name', 'back_url'
     ]),
-
+    authenticated() {
+      if (this.auth) {
+        this.$router.push(this.back_url)
+      }
+    },
     name: {
       get: function() {
         return this.getName()

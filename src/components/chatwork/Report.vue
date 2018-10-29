@@ -136,18 +136,11 @@ export default {
   },
   data () {
     return {
-      report: this.$store.state.report.report,
-      selected_date_string: this.$store.state.report.selected_date_string,
-      today_date_string: this.$store.state.report.today_date_string,
-      prev_date_string: this.$store.state.report.prev_date_string,
-      next_date_string: this.$store.state.report.next_date_string,
       setting: {},
       selected: null,
       rooms: [],
       room_id: null,
       members: {},
-      configs: this.$store.state.report.configs,
-      report: this.$store.state.report.report_nil
     }
   },
   beforeCreate() {
@@ -188,8 +181,133 @@ export default {
     ...mapState('authentication', [
       'auth'
     ]),
+    ...mapState('report', [
+      'report', 'selected_date_string', 'today_date_string', 'prev_date_string',
+      'next_date_string', 'configs'
+    ]),
+    selected_date_string: {
+      get: function() {
+        return this.$store.state.report.selected_date_string;
+      },
+      set: function (newValue) {
+        this.setState({name: 'selected_date_string', value: newValue})
+      }
+    },
+    today_date_string: {
+      get: function() {
+        return this.$store.state.report.today_date_string;
+      },
+      set: function (newValue) {
+        this.setState({name: 'today_date_string', value: newValue})
+      }
+    },
+    prev_date_string: {
+      get: function() {
+        return this.$store.state.report.prev_date_string;
+      },
+      set: function (newValue) {
+        this.setState({name: 'prev_date_string', value: newValue})
+      }
+    },
+    next_date_string: {
+      get: function() {
+        return this.$store.state.report.next_date_string;
+      },
+      set: function (newValue) {
+        this.setState({name: 'next_date_string', value: newValue})
+      }
+    },
+    report: {
+      title: {
+        get: function() {
+          return this.$store.state.report.report.title;
+        },
+        set: function (newValue) {
+          this.setReportState({name: 'title', value: newValue})
+        }
+      },
+      today_plan: {
+        get: function() {
+          return this.$store.state.report.report.today_plan;
+        },
+        set: function (newValue) {
+          this.setReportState({name: 'today_plan', value: newValue})
+        }
+      },
+      actual_archiverment: {
+        get: function() {
+          return this.$store.state.report.report.actual_archiverment;
+        },
+        set: function (newValue) {
+          this.setReportState({name: 'actual_archiverment', value: newValue})
+        }
+      },
+      next_plan: {
+        get: function() {
+          return this.$store.state.report.report.next_plan;
+        },
+        set: function (newValue) {
+          this.setReportState({name: 'next_plan', value: newValue})
+        }
+      },
+      issues: {
+        get: function() {
+          return this.$store.state.report.report.issues;
+        },
+        set: function (newValue) {
+          this.setReportState({name: 'issues', value: newValue})
+        }
+      },
+      daily_report: {
+        get: function() {
+          return this.$store.state.report.report.daily_report;
+        },
+        set: function (newValue) {
+          this.setReportState({name: 'daily_report', value: newValue})
+        }
+      },
+      get: function() {
+        return this.$store.state.report.report;
+      },
+      set: function (newValue) {
+        this.setState({name: 'report', value: newValue})
+      }
+    },
+    configs: {
+      room_id: {
+        get: function() {
+          return this.$store.state.report.configs.room_id;
+        },
+        set: function (newValue) {
+          this.setConfigState({name: 'room_id', value: newValue})
+        }
+      },
+      members: {
+        get: function() {
+          return this.$store.state.report.configs.members;
+        },
+        set: function (newValue) {
+          this.setConfigState({name: 'members', value: newValue})
+        }
+      },
+      selected_members: {
+        get: function() {
+          return this.$store.state.report.configs.selected_members;
+        },
+        set: function (newValue) {
+          this.setConfigState({name: 'selected_members', value: newValue})
+        }
+      },
+      get: function() {
+        return this.$store.state.report.configs;
+      },
+      set: function (newValue) {
+        this.setState({name: 'configs', value: newValue})
+      }
+    },
+
     check_allow_edit() {
-      return this.$store.state.report.selected_date_string == this.$store.state.report.today_date_string
+      return this.selected_date_string == this.today_date_string
     },
     show_members() {
       return this.get_members();
@@ -202,6 +320,12 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('report', [
+      'setReportState', 'setState', 'setConfigState'
+    ]),
+    ...mapActions('report', [
+      'save'
+    ]),
     selected_plan(date_string) {
       this.$store.commit('report/set_state', {name: 'selected_date_string', value: date_string});
       this.report = this.$store.getters['report/current_report']
@@ -278,7 +402,7 @@ ${this.convert_to_an(this.report.daily_report)}
       }).join('\n');
     },
     member_is_checked(member) {
-      var selected_members = this.$store.state.report.configs.selected_members[this.configs.room_id] || []
+      var selected_members = this.configs.selected_members[this.configs.room_id] || []
       return selected_members.includes(member) ? "accepted" : "not_accepted"
     },
     convert_to_an(text) {
@@ -292,7 +416,7 @@ ${this.convert_to_an(this.report.daily_report)}
       document.execCommand("copy");
     },
     copy_message() {
-      this.save_report();
+      this.save();
 
       this.copy_to_clipboard("message_code");
       this.$swal({
@@ -302,7 +426,7 @@ ${this.convert_to_an(this.report.daily_report)}
       });
     },
     send_message() {
-      this.save_report();
+      this.save();
 
       var url = `${process.env.ROOT_API}/rooms/${this.configs.room_id}/messages`;
 
@@ -320,15 +444,6 @@ ${this.convert_to_an(this.report.daily_report)}
             timer: 2000
           });
         }
-      });
-    },
-    save_report() {
-      var url = `${process.env.ROOT_API}/save_report`;
-      this.report.date = this.selected_date_string;
-      this.axios.post(url, {token: null, report: this.report}).then((res) => {
-          //
-      }).catch(e => {
-
       });
     }
   }

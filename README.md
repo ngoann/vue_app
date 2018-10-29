@@ -30,6 +30,7 @@ npm test
 ## Build server
 
 ``` bash
+docker-compose up -d --force-recreate --no-deps --build <name>
 sudo docker-compose run --rm web rails db:create
 sudo docker-compose run --rm web rails db:migrate
 sudo docker-compose run --rm web rake secret

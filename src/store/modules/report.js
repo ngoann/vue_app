@@ -1,31 +1,9 @@
+import report_api from '../../api/report'
 var localStorage = require('localStorage')
 var moment = require('moment');
 const DATE_FORMAT = 'DD/MM/YYYY';
 
 const state = {
-  report: {
-    configs: {
-      username: null,
-      selected_date_string: moment().format(DATE_FORMAT),
-      today_date_string: moment().format(DATE_FORMAT),
-      prev_date_string: moment().add('days', -1).format("YYYY-MM-DD") + "T00:00:00.000Z",
-      next_date_string: moment().add('days', 1).format(DATE_FORMAT),
-      rooms: [],
-      selected_room_id: null,
-      members: []
-    },
-    list_reports: {},
-    nil_object: {
-      room_id: null,
-      members: {},
-      title: null,
-      today_plan: null,
-      actual_archiverment: null,
-      next_plan: null,
-      issues: null,
-      daily_report: null
-    }
-  },
   reports: {},
   setting: {},
   selected: null,
@@ -41,7 +19,14 @@ const state = {
   today_date_string: moment().format(DATE_FORMAT),
   prev_date_string: moment().format("YYYY-MM-DD") + "T00:00:00.000Z",
   next_date_string: moment().add('days', 1).format(DATE_FORMAT),
-  report: {},
+  report: {
+    title: null,
+    today_plan: null,
+    actual_archiverment: null,
+    next_plan: null,
+    issues: null,
+    daily_report: null
+  },
   report_nil: {
     title: null,
     today_plan: null,
@@ -70,9 +55,11 @@ const getters = {
 
 // actions
 const actions = {
-  // check_allow_edit({ state, commit }) {
-  //   return moment(state.selected_date_string, DATE_FORMAT) >= moment(state.today_date_string, DATE_FORMAT)
-  // }
+  save({commit, state, rootState}) {
+    report_api.save({report: state.report, date: state.selected_date_string, token: rootState.authentication.token}, status => {
+      // commit('setAuth', status)
+    })
+  }
 }
 
 // mutations
@@ -114,6 +101,17 @@ const mutations = {
 
       localStorage.setItem('reports', JSON.stringify(state.reports));
     }
+  },
+
+
+  setState(state, params) {
+    state[params.name] = params.value
+  },
+  setReportState(state, params) {
+    state.report[params.name] = params.value
+  },
+  setConfigState(state, params) {
+    state.configs[params.name] = params.value
   }
 }
 
