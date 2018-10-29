@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  after_save :init_secret
+  before_save :init_secret
 
   def response_attrs
     {
