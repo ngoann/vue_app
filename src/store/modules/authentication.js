@@ -40,19 +40,32 @@ const getters = {
 // actions
 const actions = {
   sign_in({ commit, state }) {
-    authentication.sign_in({username: state.username, password: state.password, remember: state.remember}, auth => {
-      commit('setAuth', auth)
+    authentication.sign_in({username: state.username, password: state.password, remember: state.remember}, res => {
+      if (res) {
+        commit('setState', {name: 'name', value: res.user.name})
+        commit('setState', {name: 'token', value: res.user.token})
+        commit('setAuth', res.auth)
+      } else {
+        commit('setAuth', res)
+      }
     })
   },
   sign_up({ commit, state }) {
-    authentication.sign_up({username: state.username, password: state.password, name: state.name}, auth => {
-      commit('setAuth', auth)
+    authentication.sign_up({username: state.username, password: state.password, name: state.name}, res => {
+      if (res) {
+        commit('setState', {name: 'name', value: res.user.name})
+        commit('setState', {name: 'token', value: res.user.token})
+        commit('setAuth', res.auth)
+      } else {
+        commit('setAuth', res)
+      }
     })
   },
   authenticate_token({ commit, state }) {
     authentication.authenticate_token(res => {
       if (res) {
         commit('setState', {name: 'name', value: res.user.name})
+        commit('setState', {name: 'token', value: res.user.token})
         commit('setAuth', res.auth)
       } else {
         commit('setAuth', res)

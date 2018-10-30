@@ -8,7 +8,7 @@ export default {
       if (response.data.user) {
         localStorage.setItem('report_app_token', response.data.user.token)
       }
-      callback(response.data.auth)
+      callback(response.data)
     })
     .catch(function (error) {
       callback(false)
@@ -20,7 +20,7 @@ export default {
       if (response.data.user) {
         localStorage.setItem('report_app_token', response.data.user.token)
       }
-      callback(response.data.auth)
+      callback(response.data)
     })
     .catch(function (error) {
       callback(false)
