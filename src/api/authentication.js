@@ -32,7 +32,7 @@ export default {
     if (token && token != "") {
       axios.post(process.env.API_SERVER + '/api/auth/authenticate_token', {token: token})
       .then(function (response) {
-        callback(response.data.auth)
+        callback(response.data)
       })
       .catch(function (error) {
         callback(false)

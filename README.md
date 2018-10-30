@@ -30,14 +30,23 @@ npm test
 ## Build server
 
 ``` bash
-docker-compose up -d --force-recreate --no-deps --build <name>
+
+#production
+sudo docker-compose -f docker-compose.prod.yml run --rm web rails db:create
+sudo docker-compose -f docker-compose.prod.yml run --rm web rails db:migrate
+sudo docker-compose -f docker-compose.prod.yml run --rm web rake secret
+
+sudo docker-compose -f docker-compose.prod.yml up -d
+
+#development
 sudo docker-compose run --rm web rails db:create
 sudo docker-compose run --rm web rails db:migrate
 sudo docker-compose run --rm web rake secret
 
-#development
-sudo docker-compose up
+sudo docker-compose up -d
 
-#deploy prod
-sudo docker-compose -f docker-compose.prod.yml up
+#debug
+rm tmp/pids/server.pid
+docker stop server_web_1
+docker stop server_db_1
 ```

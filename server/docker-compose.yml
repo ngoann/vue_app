@@ -11,6 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile-web
     env_file: .env
+    tty: true
     volumes:
       - .:/server
     ports:

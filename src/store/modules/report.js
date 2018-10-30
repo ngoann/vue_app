@@ -108,7 +108,7 @@ const mutations = {
     state[params.name] = params.value
   },
   setReportState(state, params) {
-    state.report[params.name] = params.value
+    state.report[params.name] = params.value.trim()
   },
   setConfigState(state, params) {
     state.configs[params.name] = params.value

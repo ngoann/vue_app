@@ -50,8 +50,13 @@ const actions = {
     })
   },
   authenticate_token({ commit, state }) {
-    authentication.authenticate_token(auth => {
-      commit('setAuth', auth)
+    authentication.authenticate_token(res => {
+      if (res) {
+        commit('setState', {name: 'name', value: res.user.name})
+        commit('setAuth', res.auth)
+      } else {
+        commit('setAuth', res)
+      }
     })
   }
 }

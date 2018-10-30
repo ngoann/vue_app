@@ -1,84 +1,9 @@
 <template>
   <div class="row">
-    <div class="col-6">
+    <div class="col-7">
       <card shadow class="" no-body>
         <div class="px-3 py-3">
-          <div class="">
-            <div class="text-uppercase font-weight-bold title badge badge-primary">Select room: </div>
-            <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" size="sm" :save="save_draft_report" />
-          </div>
-          <div class="members" style="margin-bottom: 15px">
-            <div class="text-uppercase font-weight-bold title badge badge-warning">Select users you want to [TO]: </div>
-            <div class="">
-              <User v-for="member in show_members" :member="member" :checked="member_is_checked(member.account_id)" :key="member.account_id + Date.now()" />
-            </div>
-          </div>
-          <div style="border-bottom: 1px solid rgb(72, 0, 139); margin-bottom: 15px;"></div>
-          <div class="content">
-            <div class="text-uppercase font-weight-bold title badge badge-success">Content:</div>
-            <div>
-              <b-form-group>
-                <b-form-input v-model="report.title" size="sm" placeholder="Please enter the user: NgoanN"
-                  :disabled="!check_allow_edit">
-                </b-form-input>
-              </b-form-group>
-            </div>
-            <div class="">
-              <div class="badge text-uppercase badge-info">1. Today plan</div>
-              <div class="">
-                <b-form-group>
-                  <b-form-textarea v-model="report.today_plan"
-                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
-                  </b-form-textarea>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="">
-              <div class="badge text-uppercase badge-info">2. Actual archiverment</div>
-              <div>
-                <b-form-group>
-                  <b-form-textarea v-model="report.actual_archiverment"
-                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
-                  </b-form-textarea>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="">
-              <div class="badge text-uppercase badge-info">3. Next plan</div>
-              <div>
-                <b-form-group>
-                  <b-form-textarea v-model="report.next_plan"
-                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
-                  </b-form-textarea>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="">
-              <div class="badge text-uppercase badge-info">4. Issues</div>
-              <div>
-                <b-form-group>
-                  <b-form-textarea v-model="report.issues"
-                    :rows="1" :max-rows="6" :disabled="!check_allow_edit">
-                  </b-form-textarea>
-                </b-form-group>
-              </div>
-            </div>
-            <div class="">
-              <div class="badge text-uppercase badge-info">5. Dailly Report</div>
-              <div class="">
-                <b-form-group>
-                  <b-form-input type="text" v-model="report.daily_report" :disabled="!check_allow_edit" size="sm"
-                    placeholder="https://docs.google.com/spreadsheets/d/1xxxxedit#gid=123455"></b-form-input>
-                </b-form-group>
-              </div>
-            </div>
-          </div>
-        </div>
-      </card>
-    </div>
-    <div class="col-6">
-      <card shadow class="" no-body>
-        <div class="px-3 py-3">
+          <div class="text-uppercase font-weight-bold title badge badge-success">Report form:</div>
           <div class="text-center mt-3 mb-4">
             <datetime type="date" v-model="prev_date_string" :default-value="new Date()" input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
             <b-button size="sm" :variant="selected_date_string == today_date_string ? 'primary' : 'default'"
@@ -95,15 +20,15 @@
             <div class="report-title" v-html="`${format_text(report.title)} - Daily report ${selected_date_string}`"></div>
             <div class="report-info">
               <h6 style="font-size: 0.91rem;">1. Today plan</h6>
-              <p v-html="format_text(report.today_plan)"></p>
+              <TextareaEditable v-model="report.today_plan" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">2. Actual archiverment</h6>
-              <p v-html="format_text(report.actual_archiverment)"></p>
+              <TextareaEditable v-model="report.actual_archiverment" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">3. Next plan</h6>
-              <p v-html="format_text(report.next_plan)"></p>
+              <TextareaEditable v-model="report.next_plan" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">4. Issues</h6>
-              <p v-html="format_text(report.issues)"></p>
+              <TextareaEditable v-model="report.issues" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">5. Dailly Report</h6>
-              <p v-html="format_text(report.daily_report)"></p>
+              <TextareaEditable v-model="report.daily_report" :disabled="!check_allow_edit" />
             </div>
           </div>
           <div class="row">
@@ -123,16 +48,55 @@
         </div>
       </card>
     </div>
+    <div class="col-5">
+      <card shadow class="" no-body>
+        <div class="px-3 py-3">
+          <div class="">
+            <div class="text-uppercase font-weight-bold title badge badge-primary">Select room: </div>
+            <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" size="sm" :save="save_draft_report" />
+          </div>
+          <div class="members" style="margin-bottom: 15px">
+            <div class="text-uppercase font-weight-bold title badge badge-warning">Select users you want to [TO]: </div>
+            <div class="">
+              <User v-for="member in show_members" :member="member" :checked="member_is_checked(member.account_id)" :key="member.account_id + Date.now()" />
+            </div>
+          </div>
+          <hr>
+          <div class="content">
+            <div class="text-uppercase font-weight-bold title badge badge-success">Export to CSV:</div>
+            <div class="row">
+              <div class="col-md-6">
+                <label for=""><b>From date:</b></label>
+                <datetime type="date" v-model="prev_date_string" :default-value="new Date()"
+                input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
+              </div>
+              <div class="col-md-6">
+                <label for=""><b>To date:</b></label>
+                <datetime type="date" v-model="prev_date_string" :default-value="new Date()"
+                input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
+              </div>
+              <hr>
+              <div class="col-12 text-center">
+                <b-button size="sm"variant="success">
+                  DOWNLOAD
+                </b-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </card>
+    </div>
   </div>
 </template>
 <script>
 import User from '@/components/chatwork/User'
+import TextareaEditable from '@/components/customs/TextareaEditable'
 import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
 import { Datetime } from 'vue-datetime';
 
 export default {
   components: {
-    User, Datetime
+    User, Datetime, TextareaEditable
   },
   data () {
     return {
@@ -155,6 +119,9 @@ export default {
         this.selected_plan(this.$moment(val).format("DD/MM/YYYY"))
       }
     },
+    name: function(val) {
+      this.report.title = val
+    }
   },
   created() {
     if (!this.$localStorage.get('setting')) {
@@ -174,12 +141,11 @@ export default {
     this.$store.commit('report/set_state', {name: 'reports', value: JSON.parse(this.$localStorage.get('reports'))})
     this.$store.commit('report/set_state', {name: 'configs', value: this.configs})
     this.report = this.$store.getters['report/current_report']
-
     this.get_rooms();
   },
   computed: {
     ...mapState('authentication', [
-      'auth'
+      'auth', 'name'
     ]),
     ...mapState('report', [
       'report', 'selected_date_string', 'today_date_string', 'prev_date_string',
