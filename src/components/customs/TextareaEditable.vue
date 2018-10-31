@@ -1,10 +1,10 @@
 <template>
   <div class="main-textareaHTML">
-    <span class="status-editing badge text-uppercase badge-success" v-if="editable">Editing</span>
+    <span class="status-editing badge text-uppercase badge-success" v-if="editable" disabled="true">Editing</span>
     <span class="status-edit badge text-uppercase badge-info" v-else
-      v-html="!this.disabled ? 'Click to Edit' : 'Can not edit'">Click to Edit</span>
+      v-html="!this.disabled ? 'Click to Edit' : 'Can not edit'" @click="enable_edit">Click to Edit</span>
     <textarea ref="textareaHTML" id="textareaHTML" :value="value" @input="updateData()" v-if="editable"
-    class="textarea-editable" @focusout="disable_edit" :disabled="disabled" :style="{ height: height + 'px' }"></textarea>
+    class="textarea-editable" @focusout="disable_edit" @focus="updateHeight" :disabled="disabled" :style="{ height: height + 'px' }"></textarea>
     <p class="contentHTML" ref="contentHTML" v-else @click="enable_edit" v-html="format_text(value)"></p>
   </div>
 </template>
@@ -27,6 +27,9 @@ export default {
       this.height = this.$refs.textareaHTML.scrollHeight
       this.$emit('input', this.$refs.textareaHTML.value)
     },
+    updateHeight() {
+      this.height = this.$refs.textareaHTML.scrollHeight
+    },
     enable_edit() {
       if (!this.disabled) {
         this.height = this.$refs.contentHTML.offsetHeight
@@ -34,6 +37,7 @@ export default {
       }
     },
     disable_edit() {
+      this.$emit('saveReport', true)
       this.editable = false
     },
     format_text(text) {
@@ -56,6 +60,7 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
+    cursor: pointer;
   }
 
   .main-textareaHTML .status-edit {
@@ -63,6 +68,7 @@ export default {
     right: 0;
     top: 0;
     display: none;
+    cursor: pointer;
   }
 
   .main-textareaHTML:hover .status-edit {

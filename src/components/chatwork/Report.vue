@@ -3,9 +3,9 @@
     <div class="col-7">
       <card shadow class="" no-body>
         <div class="px-3 py-3">
-          <div class="text-uppercase font-weight-bold title badge badge-success">Report form:</div>
+          <div class="text-uppercase font-weight-bold title badge badge-primary">Report form:</div>
           <div class="text-center mt-3 mb-4">
-            <datetime type="date" v-model="prev_date_string" :default-value="new Date()" input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
+            <datetime type="date" v-model="prev_date_string" input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
             <b-button size="sm" :variant="selected_date_string == today_date_string ? 'primary' : 'default'"
               @click="selected_plan(today_date_string)">
               Today plan
@@ -17,26 +17,30 @@
           </div>
           <!-- <p>{{ to_member_string() }}</p> -->
           <div class="main-content" style="margin-bottom: 20px; font-size: 0.9rem;">
-            <div class="report-title" v-html="`${format_text(report.title)} - Daily report ${selected_date_string}`"></div>
+            <div class="report-title" v-html="">
+              {{format_text(report.title)}} - Daily report {{selected_date_string}}
+            </div>
             <div class="report-info">
               <h6 style="font-size: 0.91rem;">1. Today plan</h6>
-              <TextareaEditable v-model="report.today_plan" :disabled="!check_allow_edit" />
+              <TextareaEditable @saveReport="save" v-model="report.today_plan" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">2. Actual archiverment</h6>
-              <TextareaEditable v-model="report.actual_archiverment" :disabled="!check_allow_edit" />
+              <TextareaEditable @saveReport="save" v-model="report.actual_archiverment" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">3. Next plan</h6>
-              <TextareaEditable v-model="report.next_plan" :disabled="!check_allow_edit" />
+              <TextareaEditable @saveReport="save" v-model="report.next_plan" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">4. Issues</h6>
-              <TextareaEditable v-model="report.issues" :disabled="!check_allow_edit" />
+              <TextareaEditable @saveReport="save" v-model="report.issues" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">5. Dailly Report</h6>
-              <TextareaEditable v-model="report.daily_report" :disabled="!check_allow_edit" />
+              <TextareaEditable @saveReport="save" v-model="report.daily_report" :disabled="!check_allow_edit" />
             </div>
           </div>
           <div class="row">
-            <div class="col-6">
-              <base-button class="btn-3 btn-block" type="primary" icon="ni ni-bag-17"  @click="send_message">Save and Send</base-button>
-            </div>
-            <div class="col-6">
-              <base-button class="btn-3 btn-block" type="success" icon="ni ni-bag-17"  @click="copy_message">Save and Copy</base-button>
+            <div class="col-md-12">
+              <b-button size="sm" variant="success" @click="send_message">
+                <i class="fa fa-paper-plane" aria-hidden="true"></i> Send
+              </b-button>
+              <b-button size="sm" variant="secondary" @click="copy_message">
+                <i class="fa fa-clone" aria-hidden="true"></i> Copy the report
+              </b-button>
             </div>
           </div>
           <div style="opacity: 0; height: 0px">
@@ -53,12 +57,15 @@
         <div class="px-3 py-3">
           <div class="">
             <div class="text-uppercase font-weight-bold title badge badge-primary">Select room: </div>
-            <b-form-select v-model="configs.room_id" :options="rooms" class="mb-3" size="sm" :save="save_draft_report" />
+            <b-form-select v-model="configs.room_id" :options="rooms"
+              class="mb-3" size="sm" />
           </div>
           <div class="members" style="margin-bottom: 15px">
-            <div class="text-uppercase font-weight-bold title badge badge-warning">Select users you want to [TO]: </div>
+            <!-- <div class="text-uppercase font-weight-bold title badge badge-primary">Select users you want to [TO]: </div> -->
             <div class="">
-              <User v-for="member in show_members" :member="member" :checked="member_is_checked(member.account_id)" :key="member.account_id + Date.now()" />
+              <User v-for="member in show_members" :member="member"
+                :checked="member_is_checked(member.account_id)"
+                :key="member.account_id + Date.now()" />
             </div>
           </div>
           <hr>
@@ -78,7 +85,7 @@
               <hr>
               <div class="col-12 text-center">
                 <b-button size="sm"variant="success">
-                  DOWNLOAD
+                  <i class="fa fa-download" aria-hidden="true"></i> DOWNLOAD
                 </b-button>
               </div>
             </div>
@@ -113,35 +120,30 @@ export default {
       this.$router.push('/login')
     }
   },
+  created() {
+    if (!this.$localStorage.get('configs')) {
+      this.$localStorage.set('configs', JSON.stringify(this.configs));
+    }
+
+    this.configs = JSON.parse(this.$localStorage.get('configs'));
+    this.$store.commit('report/set_state', {name: 'configs', value: this.configs})
+    if (this.$store.state.authentication.auth) {
+      this.fetch_report();
+      this.get_rooms();
+    }
+  },
   watch: {
+    selected_date_string: function(val) {
+      this.fetch_report();
+    },
     prev_date_string: function (val) {
       if (val) {
         this.selected_plan(this.$moment(val).format("DD/MM/YYYY"))
       }
     },
-    name: function(val) {
-      this.report.title = val
+    report: function (val) {
+      this.report.title = this.name
     }
-  },
-  created() {
-    if (!this.$localStorage.get('setting')) {
-      this.$localStorage.set('setting', JSON.stringify(this.setting));
-    }
-
-    if (!this.$localStorage.get('reports')) {
-      this.$localStorage.set('reports', JSON.stringify({}));
-    }
-
-    if (!this.$localStorage.get('configs')) {
-      this.$localStorage.set('configs', JSON.stringify(this.configs));
-    }
-
-    this.setting = JSON.parse(this.$localStorage.get('setting'));
-    this.configs = JSON.parse(this.$localStorage.get('configs'));
-    this.$store.commit('report/set_state', {name: 'reports', value: JSON.parse(this.$localStorage.get('reports'))})
-    this.$store.commit('report/set_state', {name: 'configs', value: this.configs})
-    this.report = this.$store.getters['report/current_report']
-    this.get_rooms();
   },
   computed: {
     ...mapState('authentication', [
@@ -278,9 +280,6 @@ export default {
     show_members() {
       return this.get_members();
     },
-    save_draft_report() {
-      this.$store.commit('report/set_state', {name: 'report', value: this.report});
-    },
     message_code() {
       return this.setup_message();
     }
@@ -290,13 +289,9 @@ export default {
       'setReportState', 'setState', 'setConfigState'
     ]),
     ...mapActions('report', [
-      'save'
+      'save', 'fetch_report'
     ]),
     selected_plan(date_string) {
-      this.$store.commit('report/set_state', {name: 'selected_date_string', value: date_string});
-      this.report = this.$store.getters['report/current_report']
-      this.$store.commit('report/set_state', {name: 'report', value: this.report});
-      this.report = this.$store.getters['report/current_report']
       this.selected_date_string = date_string
       this.prev_date_string = this.$moment(date_string, "DD/MM/YYYY").format("YYYY-MM-DD") + "T00:00:00.000Z"
     },
@@ -382,8 +377,6 @@ ${this.convert_to_an(this.report.daily_report)}
       document.execCommand("copy");
     },
     copy_message() {
-      this.save();
-
       this.copy_to_clipboard("message_code");
       this.$swal({
         type: 'success',
@@ -392,8 +385,6 @@ ${this.convert_to_an(this.report.daily_report)}
       });
     },
     send_message() {
-      this.save();
-
       var url = `${process.env.ROOT_API}/rooms/${this.configs.room_id}/messages`;
 
       return this.axios.post(url, {token: this.setting.chatwork_token, message: this.setup_message()}).then((res) => {

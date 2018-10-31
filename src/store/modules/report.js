@@ -4,8 +4,8 @@ var moment = require('moment');
 const DATE_FORMAT = 'DD/MM/YYYY';
 
 const state = {
-  reports: {},
-  setting: {},
+  reports: JSON.parse(localStorage.getItem('reports') || '{}'),
+  setting: JSON.parse(localStorage.getItem('setting') || '{}'),
   selected: null,
   rooms: [],
   room_id: null,
@@ -56,9 +56,23 @@ const getters = {
 // actions
 const actions = {
   save({commit, state, rootState}) {
+    commit('set_state', {name: 'report', value: state.report})
     report_api.save({report: state.report, date: state.selected_date_string, token: rootState.authentication.token}, status => {
       // commit('setAuth', status)
     })
+  },
+  fetch_report({commit, state, rootState}) {
+    if (state.reports[state.selected_date_string]) {
+      commit('set_state', {name: 'report', value: state.reports[state.selected_date_string]})
+    } else {
+      report_api.find({date: state.selected_date_string, token: rootState.authentication.token}, data => {
+        if (data.status) {
+          commit('set_state', {name: 'report', value: data.report})
+        } else {
+          commit('set_state', {name: 'report', value: state.report_nil})
+        }
+      })
+    }
   }
 }
 
@@ -69,7 +83,7 @@ const mutations = {
     state.configs.selected_members[state.configs.room_id].push(member_id);
     localStorage.setItem('configs', JSON.stringify(state.configs));
   },
-  remove_selected_memebers(state, member_id) {
+  remove_selected_members(state, member_id) {
     state.configs.selected_members[state.configs.room_id] = state.configs.selected_members[state.configs.room_id] || []
     if (state.configs.selected_members[state.configs.room_id].length > 0) {
       var index_of_member = state.configs.selected_members[state.configs.room_id].indexOf(member_id);
@@ -88,22 +102,20 @@ const mutations = {
     }
 
     if (params.name == 'report') {
-      var next_plan_date = moment(state.selected_date_string, DATE_FORMAT).add('days', 1).format(DATE_FORMAT)
+      state.reports[state.selected_date_string] = params.value;
 
-      state.reports[next_plan_date] = state.reports[next_plan_date] || state.report_nil
-      state.reports[next_plan_date].today_plan = params.value.next_plan
-      state.reports[next_plan_date].title = params.value.title
-      state.reports[next_plan_date].daily_report = params.value.daily_report
+      if (state.selected_date_string == state.today_date_string) {
+        var next_plan_date = moment(state.selected_date_string, DATE_FORMAT).add('days', 1).format(DATE_FORMAT)
 
-      if (moment(state.selected_date_string, DATE_FORMAT) >= moment(state.today_date_string, DATE_FORMAT)) {
-        state.reports[state.selected_date_string] = params.value;
+        state.reports[next_plan_date] = state.reports[next_plan_date] || state.report_nil
+        state.reports[next_plan_date].today_plan = params.value.next_plan
+        state.reports[next_plan_date].title = params.value.title
+        state.reports[next_plan_date].daily_report = params.value.daily_report
       }
 
       localStorage.setItem('reports', JSON.stringify(state.reports));
     }
   },
-
-
   setState(state, params) {
     state[params.name] = params.value
   },

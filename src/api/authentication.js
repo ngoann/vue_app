@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require('axios')
 var localStorage = require('localStorage')
 
 export default {
