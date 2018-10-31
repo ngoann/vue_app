@@ -18,7 +18,7 @@
           <!-- <p>{{ to_member_string() }}</p> -->
           <div class="main-content" style="margin-bottom: 20px; font-size: 0.9rem;">
             <div class="report-title" v-html="">
-              {{format_text(report.title)}} - Daily report {{selected_date_string}}
+              {{format_text(name)}} - Daily report {{selected_date_string}}
             </div>
             <div class="report-info">
               <h6 style="font-size: 0.91rem;">1. Today plan</h6>
@@ -140,9 +140,6 @@ export default {
       if (val) {
         this.selected_plan(this.$moment(val).format("DD/MM/YYYY"))
       }
-    },
-    report: function (val) {
-      this.report.title = this.name
     }
   },
   computed: {
@@ -186,14 +183,6 @@ export default {
       }
     },
     report: {
-      title: {
-        get: function() {
-          return this.$store.state.report.report.title;
-        },
-        set: function (newValue) {
-          this.setReportState({name: 'title', value: newValue})
-        }
-      },
       today_plan: {
         get: function() {
           return this.$store.state.report.report.today_plan;
@@ -305,7 +294,7 @@ export default {
       return to_list;
     },
     setup_message() {
-      return `${this.to_member_string()}[info][title]${this.report.title} - Daily report ${this.selected_date_string}[/title]1. Today plan
+      return `${this.to_member_string()}[info][title]${this.name} - Daily report ${this.selected_date_string}[/title]1. Today plan
 ${this.convert_to_an(this.report.today_plan)}
 2. Actual archiverment
 ${this.convert_to_an(this.report.actual_archiverment)}

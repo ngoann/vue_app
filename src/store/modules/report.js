@@ -20,7 +20,6 @@ const state = {
   prev_date_string: moment().format("YYYY-MM-DD") + "T00:00:00.000Z",
   next_date_string: moment().add('days', 1).format(DATE_FORMAT),
   report: {
-    title: null,
     today_plan: null,
     actual_archiverment: null,
     next_plan: null,
@@ -28,7 +27,6 @@ const state = {
     daily_report: null
   },
   report_nil: {
-    title: null,
     today_plan: null,
     actual_archiverment: null,
     next_plan: null,
@@ -43,7 +41,6 @@ const getters = {
     return state.reports[state.selected_date_string] || {
       room_id: "",
       members: {},
-      title: "",
       today_plan: "",
       actual_archiverment: "",
       next_plan: "",
@@ -109,7 +106,6 @@ const mutations = {
 
         state.reports[next_plan_date] = state.reports[next_plan_date] || state.report_nil
         state.reports[next_plan_date].today_plan = params.value.next_plan
-        state.reports[next_plan_date].title = params.value.title
         state.reports[next_plan_date].daily_report = params.value.daily_report
       }
 
