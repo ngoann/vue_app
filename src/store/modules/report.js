@@ -70,6 +70,10 @@ const actions = {
         }
       })
     }
+  },
+  reset_reports({commit}) {
+    localStorage.setItem('reports', '{}')
+    commit('setState', {name: 'reports', value: {}})
   }
 }
 

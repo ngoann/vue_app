@@ -61,6 +61,10 @@ const actions = {
       }
     })
   },
+  logout({ commit }) {
+    commit('setAuth', false)
+    localStorage.setItem('report_app_token', '')
+  },
   authenticate_token({ commit, state }) {
     authentication.authenticate_token(res => {
       if (res) {

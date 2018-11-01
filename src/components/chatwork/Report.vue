@@ -15,7 +15,6 @@
               Next plan
             </b-button>
           </div>
-          <!-- <p>{{ to_member_string() }}</p> -->
           <div class="main-content" style="margin-bottom: 20px; font-size: 0.9rem;">
             <div class="report-title" v-html="">
               {{format_text(name)}} - Daily report {{selected_date_string}}

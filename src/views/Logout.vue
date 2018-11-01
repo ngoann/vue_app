@@ -2,20 +2,26 @@
 
 </template>
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from 'vuex'
 export default {
   data() {
     return {
     }
   },
   created() {
-    this.$localStorage.set('report_app_token', '')
-    this.setState({name: 'auth', value: false})
+    this.logout()
+    this.reset_reports()
     this.$router.push('/login')
   },
   methods: {
     ...mapMutations('authentication', [
       'setState'
+    ]),
+    ...mapActions('authentication', [
+      'logout'
+    ]),
+    ...mapActions('report', [
+      'reset_reports'
     ])
   }
 };
