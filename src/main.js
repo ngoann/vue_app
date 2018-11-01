@@ -23,6 +23,7 @@ import Datetime from 'vue-datetime'
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
 import Argon from "./plugins/argon-kit";
+import JsonExcel from 'vue-json-excel'
 
 Vue.use(Vuex);
 Vue.use(Argon);
@@ -35,6 +36,7 @@ library.add(faSave)
 library.add(faPlay)
 library.add(faCheck, faTimes)
 
+Vue.component('downloadExcel', JsonExcel)
 Vue.component('fa-icon', FontAwesomeIcon);
 Vue.use(VueLocalStorage)
 Vue.use(BootstrapVue);

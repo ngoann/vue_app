@@ -19,6 +19,28 @@ const state = {
   today_date_string: moment().format(DATE_FORMAT),
   prev_date_string: moment().format("YYYY-MM-DD") + "T00:00:00.000Z",
   next_date_string: moment().add('days', 1).format(DATE_FORMAT),
+  export_csv: {
+    start_date: moment().format("YYYY-MM-DD") + "T00:00:00.000Z",
+    end_date: moment().format("YYYY-MM-DD") + "T00:00:00.000Z",
+    fields: {
+      'Date': 'date',
+      'Name': 'name',
+      'Today plan': 'today_plan',
+      'Actual archiverment': 'actual_archiverment',
+      'Next plan': 'next_plan',
+      'Issues': 'issues',
+      'Daily report': 'daily_report'
+    },
+    meta: [
+      [
+        {
+          'key': 'charset',
+          'value': 'utf-8'
+        }
+      ]
+    ],
+    data: []
+  },
   report: {
     today_plan: null,
     actual_archiverment: null,
@@ -71,6 +93,17 @@ const actions = {
       })
     }
   },
+  fetch_export_data({commit, state, rootState}) {
+    report_api.export_csv({
+      start_date: state.export_csv.start_date,
+      end_date: state.export_csv.end_date,
+      token: rootState.authentication.token
+    }, data => {
+      if (data.status) {
+        commit('setExportState', {name: 'data', value: data.reports})
+      }
+    })
+  },
   reset_reports({commit}) {
     localStorage.setItem('reports', '{}')
     commit('setState', {name: 'reports', value: {}})
@@ -121,6 +154,9 @@ const mutations = {
   },
   setReportState(state, params) {
     state.report[params.name] = params.value.trim()
+  },
+  setExportState(state, params) {
+    state.export_csv[params.name] = params.value
   },
   setConfigState(state, params) {
     state.configs[params.name] = params.value

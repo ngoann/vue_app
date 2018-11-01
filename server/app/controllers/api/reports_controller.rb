@@ -1,5 +1,5 @@
 class Api::ReportsController < ApplicationController
-  before_action :find_user, only: [:index, :find, :create]
+  before_action :find_user, only: [:index, :find, :create, :export_csv]
 
   def index
   end
@@ -8,7 +8,14 @@ class Api::ReportsController < ApplicationController
     if user && report = user.reports.find_or_init(params[:date])
       return render json: {status: true, report: report.res_attrs}
     end
-    render json: {status: false, report: Report.new.res_attrs} 
+    render json: {status: false, report: Report.new.res_attrs}
+  end
+
+  def export_csv
+    if user && reports = user.reports.date_from(params[:start_date].to_date, params[:end_date].to_date)
+      return render json: {status: true, reports: reports.map(&:export_csv_attrs)}
+    end
+    render json: {status: false, reports: []}
   end
 
   def create

@@ -72,20 +72,22 @@
             <div class="text-uppercase font-weight-bold title badge badge-success">Export to CSV:</div>
             <div class="row">
               <div class="col-md-6">
-                <label for=""><b>From date:</b></label>
-                <datetime type="date" v-model="prev_date_string" :default-value="new Date()"
+                <label for=""><b>Start date:</b></label>
+                <datetime type="date" v-model="export_csv.start_date"
                 input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
               </div>
               <div class="col-md-6">
-                <label for=""><b>To date:</b></label>
-                <datetime type="date" v-model="prev_date_string" :default-value="new Date()"
+                <label for=""><b>End date:</b></label>
+                <datetime type="date" v-model="export_csv.end_date"
                 input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
               </div>
               <hr>
               <div class="col-12 text-center">
-                <b-button size="sm"variant="success">
-                  <i class="fa fa-download" aria-hidden="true"></i> DOWNLOAD
-                </b-button>
+                  <download-excel :data= "export_csv.data" :fields="export_csv.fields" :name="export_csv_name()" type="csv">
+                    <b-button size="sm"variant="success">
+                      <i class="fa fa-download" aria-hidden="true"></i> DOWNLOAD
+                    </b-button>
+                </download-excel>
               </div>
             </div>
           </div>
@@ -128,6 +130,7 @@ export default {
     this.$store.commit('report/set_state', {name: 'configs', value: this.configs})
     if (this.$store.state.authentication.auth) {
       this.fetch_report();
+      this.fetch_export_data();
       this.get_rooms();
     }
   },
@@ -139,7 +142,19 @@ export default {
       if (val) {
         this.selected_plan(this.$moment(val).format("DD/MM/YYYY"))
       }
-    }
+    },
+    'export_csv.start_date': {
+      handler: function (val, oldVal) {
+        this.fetch_export_data();
+      },
+      deep: true
+    },
+    'export_csv.end_date': {
+      handler: function (val, oldVal) {
+        this.fetch_export_data();
+      },
+      deep: true
+    },
   },
   computed: {
     ...mapState('authentication', [
@@ -147,7 +162,7 @@ export default {
     ]),
     ...mapState('report', [
       'report', 'selected_date_string', 'today_date_string', 'prev_date_string',
-      'next_date_string', 'configs'
+      'next_date_string', 'configs', 'export_csv'
     ]),
     selected_date_string: {
       get: function() {
@@ -179,6 +194,30 @@ export default {
       },
       set: function (newValue) {
         this.setState({name: 'next_date_string', value: newValue})
+      }
+    },
+    export_csv: {
+      start_date: {
+        get: function() {
+          return this.$store.state.report.export_csv.start_date;
+        },
+        set: function (newValue) {
+          this.setExportState({name: 'start_date', value: newValue})
+        }
+      },
+      end_date: {
+        get: function() {
+          return this.$store.state.report.export_csv.end_date;
+        },
+        set: function (newValue) {
+          this.setExportState({name: 'end_date', value: newValue})
+        }
+      },
+      get: function() {
+        return this.$store.state.report.export_csv;
+      },
+      set: function (newValue) {
+        this.setState({name: 'export_csv', value: newValue})
       }
     },
     report: {
@@ -274,11 +313,14 @@ export default {
   },
   methods: {
     ...mapMutations('report', [
-      'setReportState', 'setState', 'setConfigState'
+      'setReportState', 'setState', 'setConfigState', 'setExportState'
     ]),
     ...mapActions('report', [
-      'save', 'fetch_report'
+      'save', 'fetch_report', 'fetch_export_data'
     ]),
+    export_csv_name() {
+      return `${this.name}_${this.$moment(this.export_csv.start_date, "YYYY-MM-DD").format("DD/MM/YYYY")}-${this.$moment(this.export_csv.end_date, "YYYY-MM-DD").format("DD/MM/YYYY")}.csv`
+    },
     selected_plan(date_string) {
       this.selected_date_string = date_string
       this.prev_date_string = this.$moment(date_string, "DD/MM/YYYY").format("YYYY-MM-DD") + "T00:00:00.000Z"

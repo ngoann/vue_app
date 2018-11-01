@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :reports do
       collection do
         post "find"
+        post "export_csv"
       end
     end
   end

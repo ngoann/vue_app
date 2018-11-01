@@ -19,5 +19,14 @@ export default {
     .catch(function (error) {
       callback({status: false})
     });
+  },
+  export_csv(payload, callback) {
+    axios.post(process.env.API_SERVER + '/api/reports/export_csv', payload)
+    .then(function (response) {
+      callback(response.data)
+    })
+    .catch(function (error) {
+      callback({status: false})
+    });
   }
 }
