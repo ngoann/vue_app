@@ -41,6 +41,13 @@ const state = {
     ],
     data: []
   },
+  next_report: {
+    today_plan: null,
+    actual_archiverment: null,
+    next_plan: null,
+    issues: null,
+    daily_report: null
+  },
   report: {
     today_plan: null,
     actual_archiverment: null,
@@ -77,6 +84,10 @@ const actions = {
   save({commit, state, rootState}) {
     commit('set_state', {name: 'report', value: state.report})
     report_api.save({report: state.report, date: state.selected_date_string, token: rootState.authentication.token}, status => {
+      // commit('setAuth', status)
+    })
+    commit('setNextReportState', {name: 'today_plan', value: state.report.next_plan})
+    report_api.save({report: state.next_report, date: state.next_date_string, token: rootState.authentication.token}, status => {
       // commit('setAuth', status)
     })
   },
@@ -144,6 +155,7 @@ const mutations = {
         state.reports[next_plan_date] = state.reports[next_plan_date] || state.report_nil
         state.reports[next_plan_date].today_plan = params.value.next_plan
         state.reports[next_plan_date].daily_report = params.value.daily_report
+        state.next_report = state.reports[next_plan_date]
       }
 
       localStorage.setItem('reports', JSON.stringify(state.reports));
@@ -154,6 +166,9 @@ const mutations = {
   },
   setReportState(state, params) {
     state.report[params.name] = params.value.trim()
+  },
+  setNextReportState(state, params) {
+    state.next_report[params.name] = params.value.trim()
   },
   setExportState(state, params) {
     state.export_csv[params.name] = params.value

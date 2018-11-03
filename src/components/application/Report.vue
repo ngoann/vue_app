@@ -28,7 +28,7 @@
               <TextareaEditable @saveReport="save" v-model="report.next_plan" :disabled="!check_allow_edit" />
               <h6 style="font-size: 0.91rem;">4. Issues</h6>
               <TextareaEditable @saveReport="save" v-model="report.issues" :disabled="!check_allow_edit" />
-              <h6 style="font-size: 0.91rem;">5. Dailly Report</h6>
+              <h6 style="font-size: 0.91rem;">5. Daily Report</h6>
               <TextareaEditable @saveReport="save" v-model="report.daily_report" :disabled="!check_allow_edit" />
             </div>
           </div>
@@ -97,7 +97,7 @@
   </div>
 </template>
 <script>
-import User from '@/components/chatwork/User'
+import User from '@/components/application/User'
 import TextareaEditable from '@/components/customs/TextareaEditable'
 import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
 import { Datetime } from 'vue-datetime';
@@ -118,6 +118,7 @@ export default {
   beforeCreate() {
     if(!this.$store.state.authentication.auth) {
       this.$store.commit('authentication/setState', {name: 'back_url', value: this.$router.currentRoute.path})
+      this.$store.commit('authentication/setState', {name: 'messages', value: {type: 'error', message: 'You must login to using this functions.'}})
       this.$router.push('/login')
     }
   },
@@ -343,7 +344,7 @@ ${this.convert_to_an(this.report.actual_archiverment)}
 ${this.convert_to_an(this.report.next_plan)}
 4. Issues
 ${this.convert_to_an(this.report.issues)}
-5. Dailly Report
+5. Daily Report
 ${this.convert_to_an(this.report.daily_report)}
 [/info]`;
     },
@@ -357,7 +358,6 @@ ${this.convert_to_an(this.report.daily_report)}
           this.axios.get(url, {params: {token: this.setting.chatwork_token}}).then((res) => {
             if (res.data) {
               this.configs.members[this.configs.room_id] = res.data.map(function(member) {
-                // return {account_id: member.account_id, name: member.name, avatar_image_url: member.avatar_image_url}
                 return {account_id: member.account_id, name: member.name}
               });
             }

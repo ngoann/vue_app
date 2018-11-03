@@ -11,7 +11,7 @@ export default {
       callback(response.data)
     })
     .catch(function (error) {
-      callback(false)
+      callback({auth: false})
     });
   },
   sign_up(payload, callback) {
@@ -23,7 +23,7 @@ export default {
       callback(response.data)
     })
     .catch(function (error) {
-      callback(false)
+      callback({auth: false})
     });
   },
   authenticate_token(callback) {
@@ -35,10 +35,10 @@ export default {
         callback(response.data)
       })
       .catch(function (error) {
-        callback(false)
+        callback({auth: false})
       });
     } else {
-      callback(false)
+      callback({auth: false})
     }
   }
 }

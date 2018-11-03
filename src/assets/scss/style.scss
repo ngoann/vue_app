@@ -1,0 +1,88 @@
+.list-project {
+  .project-item {
+    cursor: pointer;
+    margin-bottom: 10px;
+
+    &:hover .content {
+      background: #c843d8;
+    }
+
+    .content,
+    .form-new-content {
+      background: #7300b3;
+      border-radius: 3px;
+      padding: 7px;
+      color: #fff;
+      position: relative;
+
+      input {
+        background: transparent;
+        border: none;
+        color: #fff;
+        outline: none;
+        width: 100%;
+      }
+
+      .project-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .new-content {
+      border-radius: 3px;
+      padding: 17px 7px;
+      color: #8c8b8b;
+      position: relative;
+      border: 2px dashed #ccc;
+      height: 100%;
+    }
+
+    &:hover {
+      .new-content {
+       background: #f1f1f1;
+     }
+    }
+  }
+
+  .pin-project {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 7px;
+  }
+
+  .project-members {
+    color: #cecece;
+  }
+
+  .project-actions a {
+    color: #fff;
+    padding: 2px 7px;
+    font-size: 13px;
+    border-radius: 3px;
+  }
+}
+
+.input-search-member {
+  font-size: 13px;
+  color: #8898aa;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #cad1d7;
+  border-radius: 0.25rem;
+  width: 300px;
+  padding: 3px 5px;
+}
+
+.select-custom {
+  font-size: 13px;
+  color: #8898aa;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #cad1d7;
+  border-radius: 0.25rem;
+  width: 100%;
+  padding: 3px 5px;
+}

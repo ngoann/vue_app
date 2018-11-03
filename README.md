@@ -49,4 +49,5 @@ sudo docker-compose up -d
 rm tmp/pids/server.pid
 docker stop server_web_1
 docker stop server_db_1
+docker-compose -f docker-compose.prod.yml up -d
 ```

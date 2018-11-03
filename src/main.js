@@ -3,9 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import iView from 'iview';
 import BootstrapVue from 'bootstrap-vue'
-import 'iview/dist/styles/iview.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -24,7 +22,9 @@ import Datetime from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
 import Argon from "./plugins/argon-kit";
 import JsonExcel from 'vue-json-excel'
+import Message from 'vue-m-message'
 
+Vue.use(Message)
 Vue.use(Vuex);
 Vue.use(Argon);
 Vue.use(VueSweetalert2);
@@ -40,7 +40,6 @@ Vue.component('downloadExcel', JsonExcel)
 Vue.component('fa-icon', FontAwesomeIcon);
 Vue.use(VueLocalStorage)
 Vue.use(BootstrapVue);
-Vue.use(iView);
 Vue.config.productionTip = false
 Vue.prototype.$baseUrl = (url = '') => {
   return process.env.ROOT_API + url

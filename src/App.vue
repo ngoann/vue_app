@@ -12,6 +12,7 @@
 <script>
 import { FadeTransition } from "vue2-transitions";
 import AppHeader from "./layout/AppHeader";
+import { mapGetters, mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
   components: {
@@ -19,6 +20,20 @@ export default {
   },
   created() {
     this.$store.dispatch('authentication/authenticate_token');
+  },
+  watch: {
+    messages: function() {
+      this.$message({
+        message: this.messages.message,
+        type: this.messages.type,
+        showClose: true
+      })
+    }
+  },
+  computed: {
+    ...mapState('authentication', [
+      'messages'
+    ]),
   }
 };
 </script>

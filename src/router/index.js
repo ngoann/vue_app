@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import ChatworkHome from '@/components/chatwork/Home'
-import ReportHome from '@/components/chatwork/Report'
+import AppHome from '@/components/application/Home'
+import ReportHome from '@/components/application/Report'
+import AdminHome from '@/components/admin/Home'
+import AdminDashboard from '@/components/admin/Dashboard'
+import AdminProject from '@/components/admin/Project'
 import UniposHome from '@/components/unipos/Home'
 import UniposSendPoint from '@/components/unipos/SendPoint'
 import UniposSetting from '@/components/unipos/Setting'
@@ -51,10 +54,18 @@ export default new Router({
       ]
     },
     {
-      path: '/chatwork',
-      component: ChatworkHome,
+      path: '/app',
+      component: AppHome,
       children: [
         {path: 'report', component: ReportHome}
+      ]
+    },
+    {
+      path: '/admin',
+      component: AdminHome,
+      children: [
+        {path: 'dashboard', component: AdminDashboard},
+        {path: 'project/:id', component: AdminProject}
       ]
     }
   ]

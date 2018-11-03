@@ -20,7 +20,7 @@
                         <p class="lead text-white mt-4 mb-5">.............................</p>
                         <div class="btn-wrapper">
                             <base-button tag="a"
-                                         href="#/chatwork/report"
+                                         href="#/app/report"
                                          class="mb-3 mb-sm-0"
                                          type="info"
                                          icon="ni ni-calendar-grid-58">
@@ -44,10 +44,10 @@
                         </a>
                     </div>
                     <div class="col-sm-4 mt-4 mt-sm-0 text-right">
-                        <span class="text-white alpha-7">Coded by</span>
+                        <!-- <span class="text-white alpha-7">Coded by</span>
                         <a title="NgoanN">
                           NgoanN
-                        </a>
+                        </a> -->
                     </div>
                 </div>
             </div>

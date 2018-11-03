@@ -17,21 +17,27 @@
             </div>
 
             <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
-                <base-dropdown>
-                  <a slot="title" href="#/chatwork/report" class="nav-link" data-toggle="dropdown" role="button">
-                      <i class="ni ni-ui-04 d-lg-none"></i>
-                      <span class="nav-link-inner--text">Daily Report</span>
-                  </a>
-                </base-dropdown>
-                <base-dropdown tag="li" class="nav-item">
-                    <a slot="title" href="#" class="nav-link" data-toggle="dropdown" role="button">
-                        <i class="ni ni-collection d-lg-none"></i>
-                        <span class="nav-link-inner--text">Unipos</span>
-                    </a>
-                    <router-link to="/unipos/send_point" class="dropdown-item">Send Point</router-link>
-                    <router-link to="/unipos/message_management" class="dropdown-item">Message Management</router-link>
-                    <router-link to="/unipos/settings" class="dropdown-item">Settings</router-link>
-                </base-dropdown>
+              <base-dropdown v-if="admin">
+                <a slot="title" href="#/admin/dashboard" class="nav-link" data-toggle="dropdown" role="button">
+                  <i class="ni ni-ui-04 d-lg-none"></i>
+                  <span class="nav-link-inner--text">Dashboard</span>
+                </a>
+              </base-dropdown>
+              <base-dropdown>
+                <a slot="title" href="#/app/report" class="nav-link" data-toggle="dropdown" role="button">
+                  <i class="ni ni-ui-04 d-lg-none"></i>
+                  <span class="nav-link-inner--text">Daily Report</span>
+                </a>
+              </base-dropdown>
+              <base-dropdown tag="li" class="nav-item">
+                <a slot="title" href="#" class="nav-link" data-toggle="dropdown" role="button">
+                  <i class="ni ni-collection d-lg-none"></i>
+                  <span class="nav-link-inner--text">Unipos</span>
+                </a>
+                <router-link to="/unipos/send_point" class="dropdown-item">Send Point</router-link>
+                <router-link to="/unipos/message_management" class="dropdown-item">Message Management</router-link>
+                <router-link to="/unipos/settings" class="dropdown-item">Settings</router-link>
+              </base-dropdown>
             </ul>
             <ul class="navbar-nav align-items-lg-center ml-lg-auto">
                 <!-- <li class="nav-item">
@@ -54,14 +60,14 @@
                         <i class="fa fa-twitter-square"></i>
                         <span class="nav-link-inner--text d-lg-none">Twitter</span>
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-link-icon" href="https://github.com/creativetimofficial/vue-argon-design-system"
-                       target="_blank" data-toggle="tooltip" title="Star us on Github">
-                        <i class="fa fa-github"></i>
-                        <span class="nav-link-inner--text d-lg-none">Github</span>
+                </li>-->
+                <li class="nav-item" v-if="auth">
+                    <a class="nav-link nav-link-icon" href="#"
+                       target="_blank" data-toggle="tooltip" :title="name">
+                        <i class="fa fa-user"></i>
+                        {{ name }} <span v-if="admin">(Admin)</span>
                     </a>
-                </li> -->
+                </li>
                 <li class="nav-item d-none d-lg-block ml-lg-4">
                     <a href="#/logout" class="btn btn-neutral btn-icon" v-if="auth">
                       <span class="btn-inner--icon">
@@ -94,7 +100,7 @@ export default {
   },
   computed: {
     ...mapState('authentication', [
-      'auth'
+      'auth', 'name', 'admin'
     ]),
   }
 };

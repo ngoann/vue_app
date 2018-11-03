@@ -8,6 +8,7 @@ yarn-error.log*
 selenium-debug.log
 /dist/static
 /dist/index.html
+/config/prod.env.js
 # Editor directories and files
 .idea
 .vscode
