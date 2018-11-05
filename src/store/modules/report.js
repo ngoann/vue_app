@@ -87,6 +87,7 @@ const actions = {
       // commit('setAuth', status)
     })
     commit('setNextReportState', {name: 'today_plan', value: state.report.next_plan})
+    commit('setNextReportState', {name: 'daily_report', value: state.report.daily_report})
     report_api.save({report: state.next_report, date: state.next_date_string, token: rootState.authentication.token}, status => {
       // commit('setAuth', status)
     })
