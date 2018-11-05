@@ -15,6 +15,7 @@ app.use(function(req, res, next) {
   next();
 });
 var port = process.env.PORT || 5000;
+var host = '0.0.0.0';
 
 app.get('/rooms', function (req, res) {
   var options = {
@@ -59,5 +60,5 @@ app.post('/rooms/:id/messages', function (req, res) {
   });
 });
 
-app.listen(port);
-console.log('server started '+ port);
+app.listen(port, host);
+console.log(`Running on http://${host}:${port}`);

@@ -1,0 +1,12 @@
+FROM ruby:2.5.3
+RUN apt-get update -qq
+RUN apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev nodejs yarn
+RUN apt-get install -y qt5-default libbison-dev libqt5webkit5-dev
+
+WORKDIR /backend
+COPY backend/Gemfile* ./
+RUN bundle install
+COPY backend/ .
+
+EXPOSE 3000
+CMD rails s -b 0.0.0.0

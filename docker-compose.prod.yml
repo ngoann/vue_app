@@ -1,23 +1,31 @@
-version: '3'
+version: "3.3"
 services:
-  app:
-    build:
-      context: .
-      dockerfile: app_DockerFile
-    depends_on:
-      - db
   db:
     image: mysql
+    env_file: backend/.env
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES UTF8; SET CHARACTER SET utf8mb4;'
     ports:
       - "3308:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-  web:
+  rails_server:
     build:
       context: .
-      dockerfile: web_DockerFile
-    depends_on:
-      - app
+      dockerfile: Dockerfile-web-prod
+    env_file: backend/.env
+    environment:
+      RAILS_ENV: production
+    volumes:
+      - ./backend:/backend
     ports:
-      - 88:80
+      - "3000:3000"
+    depends_on:
+      - db
+  node_server:
+    build:
+      context: .
+      dockerfile: Dockerfile-node-server
+    tty: true
+    volumes:
+      - ./frontend:/frontend
+    command: node server
+    ports:
+      - "80:5000"

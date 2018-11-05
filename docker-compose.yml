@@ -1,13 +1,30 @@
-version: '3'
+version: "3.3"
 services:
-  web:
+  db:
+    image: mysql
+    env_file: backend/.env
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES UTF8; SET CHARACTER SET utf8mb4;'
+    ports:
+      - "3308:3306"
+  rails_server:
     build:
       context: .
-      dockerfile: node_Dockerfile
+      dockerfile: Dockerfile-web
+    env_file: backend/.env
     tty: true
     volumes:
-      - .:/vue_app
-    command: npm run dev
+      - ./backend:/backend
     ports:
-      - "5001:5000"
-      - "8081:8080"
+      - "3000:3000"
+    depends_on:
+      - db
+  node_server:
+    build:
+      context: .
+      dockerfile: Dockerfile-node-server
+    tty: true
+    volumes:
+      - ./frontend:/frontend
+    command: node server
+    ports:
+      - "5000:5000"

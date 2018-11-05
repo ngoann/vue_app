@@ -32,23 +32,22 @@ npm test
 ``` bash
 
 #production
-sudo docker-compose -f docker-compose.prod.yml run --rm rails_server rails db:create
-sudo docker-compose -f docker-compose.prod.yml run --rm rails_server rails db:migrate
-sudo docker-compose -f docker-compose.prod.yml run --rm rails_server rake secret
+sudo docker-compose -f docker-compose.prod.yml run --rm web rails db:create
+sudo docker-compose -f docker-compose.prod.yml run --rm web rails db:migrate
+sudo docker-compose -f docker-compose.prod.yml run --rm web rake secret
 
 sudo docker-compose -f docker-compose.prod.yml up -d
 
 #development
-sudo docker-compose run --rm rails_server rails db:create
-sudo docker-compose run --rm rails_server rails db:migrate
-sudo docker-compose run --rm rails_server rake secret
+sudo docker-compose run --rm web rails db:create
+sudo docker-compose run --rm web rails db:migrate
+sudo docker-compose run --rm web rake secret
 
 sudo docker-compose up -d
 
 #debug
 rm tmp/pids/server.pid
-docker stop vueapp_rails_server_1
-docker stop vueapp_db_1
-docker stop vueapp_node_server_1
+docker stop server_web_1
+docker stop server_db_1
 docker-compose -f docker-compose.prod.yml up -d
 ```

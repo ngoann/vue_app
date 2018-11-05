@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: node_Dockerfile
+    tty: true
+    volumes:
+      - .:/vue_app
+    command: node server
+    ports:
+      - "5000:5000"
