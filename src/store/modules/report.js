@@ -83,12 +83,12 @@ const getters = {
 const actions = {
   save({commit, state, rootState}) {
     commit('set_state', {name: 'report', value: state.report})
-    report_api.save({report: state.report, date: state.selected_date_string, token: rootState.authentication.token}, status => {
+    report_api.save({report: Object.assign({project_id: rootState.authentication.user_data.current_project}, state.report), date: state.selected_date_string, token: rootState.authentication.token}, status => {
       // commit('setAuth', status)
     })
     commit('setNextReportState', {name: 'today_plan', value: state.report.next_plan})
     commit('setNextReportState', {name: 'daily_report', value: state.report.daily_report})
-    report_api.save({report: state.next_report, date: state.next_date_string, token: rootState.authentication.token}, status => {
+    report_api.save({report: Object.assign({project_id: rootState.authentication.user_data.current_project}, state.next_report), date: state.next_date_string, token: rootState.authentication.token}, status => {
       // commit('setAuth', status)
     })
   },
@@ -113,6 +113,13 @@ const actions = {
     }, data => {
       if (data.status) {
         commit('setExportState', {name: 'data', value: data.reports})
+      }
+    })
+  },
+  fetch_report_from({commit, state, rootState}, payload) {
+    return report_api.export_csv(payload, data => {
+      if (data.status) {
+        return data.reports
       }
     })
   },
@@ -166,10 +173,10 @@ const mutations = {
     state[params.name] = params.value
   },
   setReportState(state, params) {
-    state.report[params.name] = params.value.trim()
+    state.report[params.name] = params.value
   },
   setNextReportState(state, params) {
-    state.next_report[params.name] = params.value.trim()
+    state.next_report[params.name] = params.value
   },
   setExportState(state, params) {
     state.export_csv[params.name] = params.value

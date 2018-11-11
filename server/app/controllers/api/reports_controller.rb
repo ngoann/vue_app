@@ -12,7 +12,7 @@ class Api::ReportsController < ApplicationController
   end
 
   def export_csv
-    if user && reports = user.reports.date_from(params[:start_date].to_date, params[:end_date].to_date)
+    if user && reports = user.reports.where(project_id: params[:project_id]).date_from(params[:start_date].to_date, params[:end_date].to_date)
       return render json: {status: true, reports: reports.map(&:export_csv_attrs)}
     end
     render json: {status: false, reports: []}
@@ -36,6 +36,6 @@ class Api::ReportsController < ApplicationController
 
   def report_params
     params.require(:report).permit :today_plan, :actual_archiverment,
-      :next_plan, :issues, :daily_report
+      :next_plan, :issues, :daily_report, :project_id
   end
 end

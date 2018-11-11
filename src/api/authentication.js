@@ -26,6 +26,15 @@ export default {
       callback({auth: false})
     });
   },
+  update_current_project(payload, callback) {
+    axios.post(process.env.API_SERVER + '/api/auth/update_current_project', payload)
+    .then(function (response) {
+      callback(response.data)
+    })
+    .catch(function (error) {
+      callback({status: false, message: "Server Error!"})
+    });
+  },
   authenticate_token(callback) {
     var token = localStorage.getItem('report_app_token')
 

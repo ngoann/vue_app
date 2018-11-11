@@ -3,7 +3,14 @@
     <div class="col-7">
       <card shadow class="" no-body>
         <div class="px-3 py-3">
-          <div class="text-uppercase font-weight-bold title badge badge-primary">Report form:</div>
+          <div class="">
+            <div class="text-uppercase font-weight-bold title badge badge-primary">Report Form: </div>
+            <select class="btn btn-sm btn-warning pull-right" v-model="user_data.current_project" @change="update_current_project(user_data.current_project)">
+              <option v-for="project in user_data.joined_projects" v-bind:value="project.id">
+                {{ project.name }}
+              </option>
+            </select>
+          </div>
           <div class="text-center mt-3 mb-4">
             <datetime type="date" v-model="prev_date_string" input-class="btn btn-sm btn-secondary" format="dd/MM/yyyy"></datetime>
             <b-button size="sm" :variant="selected_date_string == today_date_string ? 'primary' : 'default'"
@@ -83,7 +90,7 @@
               </div>
               <hr>
               <div class="col-12 text-center">
-                  <download-excel :data= "export_csv.data" :fields="export_csv.fields" :name="export_csv_name()" type="csv">
+                <download-excel :data= "export_csv.data" :fields="export_csv.fields" :name="export_csv_name()" type="csv">
                     <b-button size="sm"variant="success">
                       <i class="fa fa-download" aria-hidden="true"></i> DOWNLOAD
                     </b-button>
@@ -159,7 +166,7 @@ export default {
   },
   computed: {
     ...mapState('authentication', [
-      'auth', 'name'
+      'auth', 'name', 'user_data'
     ]),
     ...mapState('report', [
       'report', 'selected_date_string', 'today_date_string', 'prev_date_string',
@@ -195,6 +202,22 @@ export default {
       },
       set: function (newValue) {
         this.setState({name: 'next_date_string', value: newValue})
+      }
+    },
+    user_data: {
+      current_project: {
+        get: function() {
+          return this.$store.state.authentication.user_data.current_project;
+        },
+        set: function (newValue) {
+          this.$store.commit('authentication/setUserDataState', {name: 'current_project', value: newValue})
+        }
+      },
+      get: function() {
+        return this.$store.state.authentication.user_data;
+      },
+      set: function (newValue) {
+        this.$store.commit('authentication/setState', {name: 'user_data', value: newValue})
       }
     },
     export_csv: {
@@ -318,6 +341,9 @@ export default {
     ]),
     ...mapActions('report', [
       'save', 'fetch_report', 'fetch_export_data'
+    ]),
+    ...mapActions('authentication', [
+      'update_current_project'
     ]),
     export_csv_name() {
       return `${this.name}_${this.$moment(this.export_csv.start_date, "YYYY-MM-DD").format("DD/MM/YYYY")}-${this.$moment(this.export_csv.end_date, "YYYY-MM-DD").format("DD/MM/YYYY")}.csv`

@@ -5,4 +5,11 @@ class Project < ApplicationRecord
   has_many :members, through: :project_project_relations, source: :member
 
   validates :name, uniqueness: true
+
+
+  def members_attrs
+    members.uniq.map do |member|
+      {id: member.id, name: member.name, token: member.token}
+    end
+  end
 end

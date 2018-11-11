@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :member_project_relations, class_name: ProjectRelation.name, foreign_key: :user_id
   has_many :managing_projects, through: :admin_project_mamangers, source: :project
   has_many :joined_projects, through: :member_project_relations, source: :project
+  belongs_to :current_project, class_name: Project.name
 
   enum role: [:member, :admin]
 
@@ -28,6 +29,6 @@ class User < ApplicationRecord
 
   private
   def init_secret
-    assign_attributes token: SecureRandom.hex(32)
+    assign_attributes token: SecureRandom.hex(32) unless token
   end
 end
