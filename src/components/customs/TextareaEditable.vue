@@ -101,7 +101,7 @@ export default {
     cursor: pointer;
     font-size: 14px;
     padding: 0 6px;
-    white-space: pre;
+    white-space: pre-line;
     border: 1px solid #fff;
   }
 
