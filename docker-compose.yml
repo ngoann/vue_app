@@ -6,25 +6,28 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES UTF8; SET CHARACTER SET utf8mb4;'
     ports:
       - "3308:3306"
-  rails_server:
+  rails_server2:
     build:
       context: .
       dockerfile: Dockerfile-web
     env_file: backend/.env
     tty: true
+    restart: always
     volumes:
       - ./backend:/backend
     ports:
       - "3000:3000"
     depends_on:
       - db
-  node_server:
+    command: rails s -b 0.0.0.0
+  vue_server:
     build:
       context: .
-      dockerfile: Dockerfile-node-server
-    tty: true
+      dockerfile: Dockerfile-vue-server
     volumes:
       - ./frontend:/frontend
-    command: node server
+    tty: true
+    restart: always
+    command: npm run dev
     ports:
-      - "5000:5000"
+      - "8080:8080"
