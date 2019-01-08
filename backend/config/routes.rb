@@ -5,8 +5,19 @@ Rails.application.routes.draw do
     post "/auth/authenticate_token", to: "auth#authenticate_token"
     post "/auth/sign_in", to: "auth#sign_in"
     post "/auth/sign_up", to: "auth#sign_up"
+    post "/auth/update_current_project", to: "auth#update_current_project"
     namespace :admin do
-      resources :projects
+      resources :projects do
+        collection do
+          post "infor"
+          post "add_member"
+        end
+      end
+      resources :users do
+        collection do
+          post "not_in_project"
+        end
+      end
     end
 
     resources :reports do

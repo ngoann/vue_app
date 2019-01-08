@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181103161728) do
+ActiveRecord::Schema.define(version: 20181113140228) do
+
+  create_table "project_mamangers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "user_id"
+    t.bigint "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_mamangers_on_project_id"
+    t.index ["user_id"], name: "index_project_mamangers_on_user_id"
+  end
 
   create_table "project_managers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "user_id"
@@ -46,6 +55,7 @@ ActiveRecord::Schema.define(version: 20181103161728) do
     t.string "daily_report"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "project_id"
     t.index ["user_id"], name: "index_reports_on_user_id"
   end
 
@@ -58,6 +68,7 @@ ActiveRecord::Schema.define(version: 20181103161728) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "role", default: 0
+    t.integer "current_project_id"
   end
 
 end
